@@ -1,25 +1,16 @@
 import * as React from "react";
 import { CommandBar, DialogContent, DialogType, ICommandBarItemProps, SearchBox } from "@fluentui/react";
-import { useContext, useEffect, useState } from "react";
-import { UserService } from "../../../services/core/UserService";
-import { SPFxContext } from "../contexts/SPFxContext";
 import { SecurityManager } from "./SecurityManager";
+import usePageNavigator from "../../../hooks/usePageNavigator";
 
 type ICompanyTemplatesProps = {
 
 }
 
 export const CompanyTemplates: React.FunctionComponent<ICompanyTemplatesProps> = (props: React.PropsWithChildren<ICompanyTemplatesProps>) => {
-  const context = useContext(SPFxContext).context;
-  const [userToken, setUserToken] = useState(undefined);
-
-  useEffect(() => {
-    const userService = context.serviceScope.consume(UserService.serviceKey);
-    userService.getUserTokenDecoded()
-      .then(token => { setUserToken(token) })
-      .catch(er => console.log(er));
-  }, []);
-
+  const [selectedNavigation, setSelectedNavigation] = React.useState<'default' | 'settings'>('default');
+  const pageNavigator = usePageNavigator(selectedNavigation);
+console.log(pageNavigator.selectedPage);
   const commandBarItems: ICommandBarItemProps[] = [
     {
       key: 'filterTemplates',
@@ -44,7 +35,7 @@ export const CompanyTemplates: React.FunctionComponent<ICompanyTemplatesProps> =
     {
       key: 'search',
       ariaLabel: 'Search',
-      onRenderIcon: (props) => <SearchBox placeholder="Templates durchsuchen" onSearch={newValue => console.log('value is ' + newValue)} styles={{ root: { width: '350px' } }}/>,
+      onRenderIcon: (props) => <SearchBox placeholder="Templates durchsuchen" onSearch={newValue => console.log('value is ' + newValue)} styles={{ root: { width: '350px' } }} />,
     },
   ];
 
@@ -55,7 +46,7 @@ export const CompanyTemplates: React.FunctionComponent<ICompanyTemplatesProps> =
       ariaLabel: 'Settings',
       iconOnly: true,
       iconProps: { iconName: 'Settings' },
-      onClick: () => console.log('Settings'),
+      onClick: () => { console.log('Settings'); setSelectedNavigation('settings') },
     },
   ];
 
@@ -69,8 +60,7 @@ export const CompanyTemplates: React.FunctionComponent<ICompanyTemplatesProps> =
         styles={{ root: { borderBottom: '1px solid #edebe9', borderTop: '1px solid #edebe9' } }}
       />
       <SecurityManager>
-        <h1 key={'title'}>Welcome!</h1>
-        {userToken && <span>TenantId: {userToken.tid}</span>}
+        {pageNavigator.selectedPage}
       </SecurityManager>
     </DialogContent>
   </>
