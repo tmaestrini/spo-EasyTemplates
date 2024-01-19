@@ -2,15 +2,20 @@ import * as React from "react";
 import { CommandBar, DialogContent, DialogType, ICommandBarItemProps, SearchBox } from "@fluentui/react";
 import { SecurityManager } from "./SecurityManager";
 import usePageNavigator from "../../../hooks/usePageNavigator";
+import { SettingsView, StandardView } from "./views";
+
 
 type ICompanyTemplatesProps = {
 
 }
 
 export const CompanyTemplates: React.FunctionComponent<ICompanyTemplatesProps> = (props: React.PropsWithChildren<ICompanyTemplatesProps>) => {
-  const [selectedNavigation, setSelectedNavigation] = React.useState<'default' | 'settings'>('default');
-  const pageNavigator = usePageNavigator(selectedNavigation);
-console.log(pageNavigator.selectedPage);
+  const pageNavigator = usePageNavigator(<StandardView/>);
+
+  function navigationHandler(destination: React.ReactNode): void {
+    pageNavigator.navigateTo(destination);
+  }
+
   const commandBarItems: ICommandBarItemProps[] = [
     {
       key: 'filterTemplates',
@@ -46,7 +51,7 @@ console.log(pageNavigator.selectedPage);
       ariaLabel: 'Settings',
       iconOnly: true,
       iconProps: { iconName: 'Settings' },
-      onClick: () => { console.log('Settings'); setSelectedNavigation('settings') },
+      onClick: () => { pageNavigator.navigateTo(<SettingsView onNavigationExit={navigationHandler} />); },
     },
   ];
 

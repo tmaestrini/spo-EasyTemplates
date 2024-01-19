@@ -5,10 +5,10 @@ import { UserService } from '../../../../services/core/UserService';
 
 export interface ITemplateViewProps { }
 
-export const TemplateView: React.FunctionComponent<ITemplateViewProps> = (props: React.PropsWithChildren<ITemplateViewProps>) => {
+export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props: React.PropsWithChildren<ITemplateViewProps>) => {
   const context = useContext(SPFxContext).context;
   const [userToken, setUserToken] = React.useState(undefined);
-
+  
   React.useEffect(() => {
     const userService = context.serviceScope.consume(UserService.serviceKey);
     userService.getUserTokenDecoded()

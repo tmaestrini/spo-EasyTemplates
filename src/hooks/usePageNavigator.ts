@@ -1,34 +1,17 @@
 import * as React from "react";
-import { useState, useEffect } from 'react';
-import { SettingsView, TemplateView } from "../extensions/companyTemplates/components/views";
+import { useEffect, useState } from 'react';
 
-export default function usePageNavigator(startNode: 'default' | 'settings'): { selectedPage: JSX.Element } {
-  const [selectedNavigation, setSelectedNavigation] = useState<'default' | 'settings'>(startNode);
-  const [page, setPage] = useState<JSX.Element>(React.createElement(TemplateView));
 
-  async function navigateTo(navigationNode: 'default' | 'settings'): Promise<void> {
-    setSelectedNavigation(navigationNode);
-  }
+export default function usePageNavigator(startNode?: React.ReactNode): { selectedPage: React.ReactNode, navigateTo: (navigationNode: React.ReactNode) => void } {
+  const [page, setPage] = useState(startNode);
 
-  async function navigator(): Promise<void> {
-    switch (selectedNavigation) {
-      case 'settings':
-        setPage(React.createElement(SettingsView, { onNavigationExit: navigateTo }));
-        break;
-      default:
-        setPage(React.createElement(TemplateView));
-    }
+  function navigateTo(navigationNode: React.ReactNode): void {
+    setPage(navigationNode);
   }
 
   useEffect(() => {
-    console.log(selectedNavigation);
-    navigator().catch(er => console.log(er));
-  }, [selectedNavigation]);
+    navigateTo(startNode);
+  }, []);
 
-  useEffect(() => {
-    setSelectedNavigation(startNode);
-    navigator().catch(er => console.log(er));
-  }, [startNode]);
-
-  return { selectedPage: page };
+  return { selectedPage: page, navigateTo };
 }
