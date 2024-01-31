@@ -10,7 +10,8 @@ type ICompanyTemplatesProps = {
 }
 
 export const CompanyTemplates: React.FunctionComponent<ICompanyTemplatesProps> = (props: React.PropsWithChildren<ICompanyTemplatesProps>) => {
-  const pageNavigator = usePageNavigator(<StandardView/>);
+  const initalView = <StandardView />
+  const pageNavigator = usePageNavigator(initalView);
 
   function navigationHandler(destination: React.ReactNode): void {
     pageNavigator.navigateTo(destination);
