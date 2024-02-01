@@ -1,5 +1,9 @@
 @import '~office-ui-fabric-react/dist/sass/References.scss';
 
+.dialogTitle {
+  margin: 1em 0px;
+}
+
 .treeLeaf,
 .treeNode {
   display: flex;

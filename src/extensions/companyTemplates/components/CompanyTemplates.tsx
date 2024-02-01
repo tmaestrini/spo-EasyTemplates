@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CommandBar, DialogContent, DialogType, ICommandBarItemProps, SearchBox } from "@fluentui/react";
+import { CommandBar, DialogContent, DialogType, ICommandBarItemProps, PrimaryButton, SearchBox } from "@fluentui/react";
 import { SecurityManager } from "./SecurityManager";
 import usePageNavigator from "../../../hooks/usePageNavigator";
 import { SettingsView, StandardView } from "./views";
@@ -42,6 +42,11 @@ export const CompanyTemplates: React.FunctionComponent<ICompanyTemplatesProps> =
       key: 'search',
       ariaLabel: 'Search',
       onRenderIcon: (props) => <SearchBox placeholder="Templates durchsuchen" onSearch={newValue => console.log('value is ' + newValue)} styles={{ root: { width: '350px' } }} />,
+    },
+    {
+      key: 'search',
+      ariaLabel: 'Search',
+      onRenderIcon: (props) => <PrimaryButton disabled={true} text={`${"0"} Templates kopieren`} onClick={() => console.log('kopieren')} allowDisabledFocus />,
     },
   ];
 

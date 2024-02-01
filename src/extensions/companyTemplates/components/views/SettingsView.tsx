@@ -77,6 +77,7 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
           <MessageBar
             messageBarType={MessageBarType.info}
             isMultiline={false}>Saving in progress...</MessageBar>}
+
         <SitePicker
           context={context as any}
           label={'Select sites'}

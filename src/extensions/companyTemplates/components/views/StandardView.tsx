@@ -101,7 +101,7 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
 
   return (
     <div>
-      <h1 key={'title'}>Template View (Standard)</h1>
+      <h2 className={`od-ItemContent-title ${styles.dialogTitle}`} key={'title'}>Template View (Standard)</h2>
       {loading && <div><Spinner size={SpinnerSize.large} label='Loading Templates...' labelPosition='top' /></div>}
       {!loading && <>
         <PrimaryButton disabled={selectedFiles.length === 0} text={`${selectedFiles.length > 0 ? `${selectedFiles.length} ` : ''}Templates kopieren`} onClick={() => console.log('kopieren')} allowDisabledFocus />
