@@ -33,7 +33,7 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
   }
 
   React.useEffect(() => {
-    async function fetchListSettings() {
+    async function fetchListSettings(): Promise<void> {
       const sp = spfi().using(SPFx(context));
       const web = await sp.getTenantAppCatalogWeb();
       const listUrl = await web.getStorageEntity("easyTemplatesListUrl");
