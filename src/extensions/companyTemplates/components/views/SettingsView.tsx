@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useContext } from 'react';
 import { SPFxContext } from '../../contexts/SPFxContext';
-import { PrimaryButton, Stack } from '@fluentui/react';
+import { MessageBar, MessageBarType, PrimaryButton, Stack } from '@fluentui/react';
 import { StandardView } from './StandardView';
 import { ISite, SitePicker } from "@pnp/spfx-controls-react/lib/SitePicker";
 import { ListPicker } from "@pnp/spfx-controls-react/lib/ListPicker";
@@ -18,7 +18,8 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
   const context = useContext(SPFxContext).context;
   const [userToken, setUserToken] = React.useState(undefined);
   const [settings, setSettings] = React.useState<{ site: string, list: string }>({ site: undefined, list: undefined });
-  const [inProgress, setInProgress] = React.useState(false);
+  const [processState, setProcess] = React.useState({ saveInProgress: false, error: null });
+
 
   async function storeListSettings(): Promise<void> {
     const sp = spfi().using(SPFx(context));
@@ -47,15 +48,15 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
     const userService = context.serviceScope.consume(UserService.serviceKey);
     userService.getUserTokenDecoded()
       .then((token) => { setUserToken(token) })
-      .catch((error) => console.log(error));
+      .catch((error) => setProcess({ ...processState, error }));
   }, []);
 
 
-  function save(): void {
-    setInProgress(true);
+  function trySaving(): void {
+    setProcess({ ...processState, saveInProgress: true });
     storeListSettings()
       .then(() => props.onNavigationExit(<StandardView />))
-      .catch(error => console.log(error));
+      .catch(error => setProcess({ saveInProgress: false, error: error }));
   }
 
   return (
@@ -68,7 +69,14 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
       }}>
 
         {userToken && <span>TenantId: {userToken.tid}</span>}
-
+        {processState.error &&
+          <MessageBar
+            messageBarType={MessageBarType.error}
+            isMultiline={false}>{processState.error}</MessageBar>}
+        {(processState.saveInProgress && !processState.error) &&
+          <MessageBar
+            messageBarType={MessageBarType.info}
+            isMultiline={false}>Saving in progress...</MessageBar>}
         <SitePicker
           context={context as any}
           label={'Select sites'}
@@ -91,7 +99,7 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
           selectedList={settings.list}
           onSelectionChanged={value => setSettings({ ...settings, list: value as string })} />
 
-        <PrimaryButton disabled={inProgress} text="Save Settings" onClick={save.bind(this)} allowDisabledFocus />
+        <PrimaryButton disabled={processState.saveInProgress} text="Save Settings" onClick={trySaving.bind(this)} allowDisabledFocus />
       </Stack>
     </>
   );
