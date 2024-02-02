@@ -22,11 +22,11 @@ export type TemplateParams = {
   listId: string
 }
 
-export function useTemplateFiles(initialValues: TemplateParams): { templateFiles: TemplateFile[], setParams: (newParams: TemplateParams) => void } {
+export function useTemplateFiles(initialValues: TemplateParams): { templateFiles: TemplateFile[], setListParams: (newParams: TemplateParams) => void } {
   const [templateLocationParams, setParams] = useState<TemplateParams>({ ...initialValues });
   const [files, setFiles] = useState<TemplateFile[]>([]);
 
-  function setTemplateLocationParams(newParams: TemplateParams): void {
+  function setListParams(newParams: TemplateParams): void {
     setParams(newParams);
   }
 
@@ -73,5 +73,5 @@ export function useTemplateFiles(initialValues: TemplateParams): { templateFiles
       .catch(error => console.log(error));
   }, [templateLocationParams]);
 
-  return { templateFiles: files, setParams: setTemplateLocationParams };
+  return { templateFiles: files, setListParams };
 }

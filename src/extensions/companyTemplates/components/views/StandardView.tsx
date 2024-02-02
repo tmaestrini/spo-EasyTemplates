@@ -2,7 +2,8 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { groupBy } from '@microsoft/sp-lodash-subset';
 import { SPFxContext } from '../../contexts/SPFxContext';
-import { Icon, PrimaryButton, Spinner, SpinnerSize, Stack, StackItem, Text } from '@fluentui/react';
+import { TemplatesCartContext } from '../../contexts/TemplatesCartContext';
+import { Icon, Spinner, SpinnerSize, Stack, StackItem, Text } from '@fluentui/react';
 import { FileIconType, getFileTypeIconProps } from '@fluentui/react-file-type-icons';
 import styles from '../CompanyTemplates.module.scss'
 import { ITreeItem, TreeView, TreeViewSelectionMode } from '@pnp/spfx-controls-react/lib/TreeView';
@@ -16,10 +17,9 @@ export interface ITemplateViewProps { }
 
 export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props: React.PropsWithChildren<ITemplateViewProps>) => {
   const context = useContext(SPFxContext).context;
-  // const [templateFiles, setFiles] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
-  const [selectedFiles, setSelectedFiles] = React.useState<ITreeItem[]>([]);
-  const { templateFiles, setParams } = useTemplateFiles({ context, listId: undefined, webUrl: undefined });
+  const { templateFiles, setListParams } = useTemplateFiles({ context, listId: undefined, webUrl: undefined });
+  const { checkoutFiles } = useContext(TemplatesCartContext);
 
   React.useEffect(() => {
     initSourceList().catch(error => console.log(error));
@@ -33,7 +33,7 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
     console.log(listId.Value);
     console.log(listUrl.Value);
 
-    setParams({ context, listId: listId.Value, webUrl: listUrl.Value });
+    setListParams({ context, listId: listId.Value, webUrl: listUrl.Value });
     setLoading(false);
   }
 
@@ -62,7 +62,7 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
     </div >;
   }
 
-  const buildGroups = (items: any[], path = '', level = 1): any[] => {
+  const groupItems = (items: any[], path = '', level = 1): any[] => {
     if (!items?.length) return [];
 
     const sorted = [...items].sort((a, b) => {
@@ -87,7 +87,7 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
           subLabel: "Test",
           data: { title: directory, type: 'Folder' },
           selectable: false,
-          children: buildGroups(grouped[directory], `${path}${directory}/`, level + 1)
+          children: groupItems(grouped[directory], `${path}${directory}/`, level + 1)
         })),
       ...grouped.$this?.filter(i => !i.title.includes('.DS'))
         .map((i: TemplateFile) => ({
@@ -104,14 +104,13 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
       <h2 className={`od-ItemContent-title ${styles.dialogTitle}`} key={'title'}>Template View (Standard)</h2>
       {loading && <div><Spinner size={SpinnerSize.large} label='Loading Templates...' labelPosition='top' /></div>}
       {!loading && <>
-        <PrimaryButton disabled={selectedFiles.length === 0} text={`${selectedFiles.length > 0 ? `${selectedFiles.length} ` : ''}Templates kopieren`} onClick={() => console.log('kopieren')} allowDisabledFocus />
         <TreeView
-          items={buildGroups(templateFiles)}
+          items={groupItems(templateFiles)}
           defaultExpandedChildren={false}
           showCheckboxes={true}
           defaultExpanded={false}
           selectionMode={TreeViewSelectionMode.Multiple}
-          onSelect={(items => { console.log(items); setSelectedFiles([...items]); })}
+          onSelect={(items) => checkoutFiles([...items])}
           onRenderItem={(i) => onRenderItem(i)}
         />
       </>}
