@@ -1,14 +1,14 @@
 import { CommandBar, ICommandBarItemProps, PrimaryButton, SearchBox } from "@fluentui/react";
 import * as React from "react";
 import { SettingsView } from "./views";
-import { TemplatesCartContext } from "../contexts/TemplatesCartContext";
+import { TemplatesManagementContext } from "../contexts/TemplatesManagementContext";
 
 type ICommandBarMenuProps = {
   pageNavigationHandler: (page: React.ReactNode) => void;
 }
 
 export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (props: React.PropsWithChildren<ICommandBarMenuProps>) => {
-  const { selectedFiles, checkoutFiles } = React.useContext(TemplatesCartContext);
+  const { selectedFiles, checkoutFiles } = React.useContext(TemplatesManagementContext);
   const { pageNavigationHandler } = props;
   
   function clearCommandBarValues(): void {

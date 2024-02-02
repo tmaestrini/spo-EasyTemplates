@@ -4,7 +4,7 @@ import { SecurityManager } from "./SecurityManager";
 import usePageNavigator from "../../../hooks/usePageNavigator";
 import { StandardView } from "./views";
 import { CommandBarMenu } from "./CommandBarMenu";
-import { TemplatesCartContextProvider } from "../contexts/TemplatesCartContextProvider";
+import { TemplatesManagementContextProvider } from "../contexts/TemplatesManagementContextProvider";
 
 
 type ICompanyTemplatesProps = {
@@ -22,12 +22,12 @@ export const CompanyTemplates: React.FunctionComponent<ICompanyTemplatesProps> =
 
   return <>
     <DialogContent type={DialogType.largeHeader} styles={{ content: { maxHeight: "80vh", height: "80vh", width: "80vw", overflowY: "scroll" } }} title={'Company Templates'}>
-      <TemplatesCartContextProvider>
+      <TemplatesManagementContextProvider>
         <CommandBarMenu pageNavigationHandler={navigationHandler} />
         <SecurityManager>
           {pageNavigator.selectedPage}
         </SecurityManager>
-      </TemplatesCartContextProvider>
+      </TemplatesManagementContextProvider>
     </DialogContent>
   </>
 }

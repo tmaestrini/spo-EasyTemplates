@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { groupBy } from '@microsoft/sp-lodash-subset';
 import { SPFxContext } from '../../contexts/SPFxContext';
-import { TemplatesCartContext } from '../../contexts/TemplatesCartContext';
+import { TemplatesManagementContext } from '../../contexts/TemplatesManagementContext';
 import { Icon, Spinner, SpinnerSize, Stack, StackItem, Text } from '@fluentui/react';
 import { FileIconType, getFileTypeIconProps } from '@fluentui/react-file-type-icons';
 import styles from '../CompanyTemplates.module.scss'
@@ -19,7 +19,7 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
   const context = useContext(SPFxContext).context;
   const [loading, setLoading] = React.useState(true);
   const { templateFiles, setListParams } = useTemplateFiles({ context, listId: undefined, webUrl: undefined });
-  const { checkoutFiles } = useContext(TemplatesCartContext);
+  const { checkoutFiles } = useContext(TemplatesManagementContext);
 
   React.useEffect(() => {
     initSourceList().catch(error => console.log(error));
