@@ -4,6 +4,10 @@
   margin: 1em 0px;
 }
 
+.dialogSubtitle {
+  font-weight: $ms-font-weight-semibold;
+}
+
 .treeLeaf,
 .treeNode {
   display: flex;
