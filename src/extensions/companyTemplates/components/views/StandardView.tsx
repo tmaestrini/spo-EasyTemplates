@@ -28,8 +28,10 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
 
   React.useEffect(() => {
     const filtered = templateFiles
-      .filter(file => file.title.toLowerCase().includes(templateFilter.value?.toLowerCase() ?? ''))
-      .filter(file => file.fileRef.toLowerCase().includes(templateFilter.value?.toLowerCase() ?? ''));
+      .filter(file => {
+        return file.title.toLowerCase().includes(templateFilter.value?.toLowerCase() ?? '')
+          || file.fileLeafRef.toLowerCase().includes(templateFilter.value?.toLowerCase() ?? '');
+      });
     setFilteredtemplateFiles(filtered);
   }, [templateFilter.value]);
 
