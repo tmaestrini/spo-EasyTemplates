@@ -19,7 +19,7 @@ export type TemplateFile = {
 export type TemplateParams = {
   context: BaseComponentContext;
   webUrl: string;
-  listId: string
+  listId: string;
 }
 
 export function useTemplateFiles(initialValues: TemplateParams): { templateFiles: TemplateFile[], setListParams: (newParams: TemplateParams) => void } {

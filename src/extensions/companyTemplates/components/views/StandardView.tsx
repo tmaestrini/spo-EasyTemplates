@@ -17,13 +17,21 @@ export interface ITemplateViewProps { }
 
 export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props: React.PropsWithChildren<ITemplateViewProps>) => {
   const context = useContext(SPFxContext).context;
-  const [loading, setLoading] = React.useState(true);
   const { templateFiles, setListParams } = useTemplateFiles({ context, listId: undefined, webUrl: undefined });
-  const { checkoutFiles } = useContext(TemplatesManagementContext);
+  const { checkoutFiles, templateFilter } = useContext(TemplatesManagementContext);
+  const [loading, setLoading] = React.useState(true);
+  const [filteredtemplateFiles, setFilteredtemplateFiles] = React.useState<TemplateFile[]>(templateFiles);
 
   React.useEffect(() => {
     initSourceList().catch(error => console.log(error));
   }, []);
+
+  React.useEffect(() => {
+    const filtered = templateFiles
+      .filter(file => file.title.toLowerCase().includes(templateFilter.value?.toLowerCase() ?? ''))
+      .filter(file => file.fileRef.toLowerCase().includes(templateFilter.value?.toLowerCase() ?? ''));
+    setFilteredtemplateFiles(filtered);
+  }, [templateFilter.value]);
 
   async function initSourceList(): Promise<void> {
     setLoading(true);
@@ -105,7 +113,7 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
       {loading && <div><Spinner size={SpinnerSize.large} label='Loading Templates...' labelPosition='top' /></div>}
       {!loading && <>
         <TreeView
-          items={groupItems(templateFiles)}
+          items={groupItems(filteredtemplateFiles.length > 0 ? filteredtemplateFiles : templateFiles)}
           defaultExpandedChildren={false}
           showCheckboxes={true}
           defaultExpanded={false}

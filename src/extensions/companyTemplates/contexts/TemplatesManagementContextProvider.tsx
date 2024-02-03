@@ -5,13 +5,23 @@ type TemplatesManagementContextProviderProps = {}
 
 export const TemplatesManagementContextProvider: React.FC<TemplatesManagementContextProviderProps> = (props: React.PropsWithChildren<TemplatesManagementContextProviderProps>) => {
   const [selectedTemplateFiles, setSelectedTemplateFiles] = React.useState([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [filterTemplateValue, setTemplateValueFilter] = React.useState('');
 
   function addTemplateFiles(files: any[]): void {
     setSelectedTemplateFiles([]);
     setSelectedTemplateFiles(files);
   }
 
-  return <TemplatesManagementContext.Provider value={{ selectedFiles: selectedTemplateFiles, checkoutFiles: addTemplateFiles }}>
+  function filterTemplateByValue(value: string): void {
+    setTemplateValueFilter(undefined);
+    setTemplateValueFilter(value);
+  }
+
+  return <TemplatesManagementContext.Provider value={{
+    selectedFiles: selectedTemplateFiles, checkoutFiles: addTemplateFiles,
+    templateFilter: {value: filterTemplateValue}, setTemplateValueFilter: filterTemplateByValue,
+  }}>
     {props.children}
   </TemplatesManagementContext.Provider>
 }

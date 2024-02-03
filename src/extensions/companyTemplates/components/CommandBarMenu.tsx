@@ -8,11 +8,12 @@ type ICommandBarMenuProps = {
 }
 
 export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (props: React.PropsWithChildren<ICommandBarMenuProps>) => {
-  const { selectedFiles, checkoutFiles } = React.useContext(TemplatesManagementContext);
+  const { selectedFiles, checkoutFiles, setTemplateValueFilter } = React.useContext(TemplatesManagementContext);
   const { pageNavigationHandler } = props;
-  
+
   function clearCommandBarValues(): void {
     checkoutFiles([]);
+    setTemplateValueFilter(undefined);
   }
 
   const commandBarItems: ICommandBarItemProps[] = [
@@ -39,7 +40,7 @@ export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (pr
     {
       key: 'search',
       ariaLabel: 'Search',
-      onRenderIcon: (props) => <SearchBox placeholder="Templates durchsuchen" onSearch={newValue => console.log('value is ' + newValue)} styles={{ root: { width: '350px' } }} />,
+      onRenderIcon: (props) => <SearchBox placeholder="Templates durchsuchen und <ENTER> drücken" onSearch={newValue => setTemplateValueFilter(newValue)} onClear={() => setTemplateValueFilter(undefined)} styles={{ root: { width: '350px' } }} />,
     },
     {
       key: 'copy',
