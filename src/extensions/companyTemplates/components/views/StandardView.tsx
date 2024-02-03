@@ -72,7 +72,7 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
     </div >;
   }
 
-  const groupItems = (items: any[], path = '', level = 1): any[] => {
+  const makeFolderStructure = (items: any[], path = '', level = 1): any[] => {
     if (!items?.length) return [];
 
     const sorted = [...items].sort((a, b) => {
@@ -97,7 +97,7 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
           subLabel: "Test",
           data: { title: directory, type: 'Folder' },
           selectable: false,
-          children: groupItems(grouped[directory], `${path}${directory}/`, level + 1)
+          children: makeFolderStructure(grouped[directory], `${path}${directory}/`, level + 1)
         })),
       ...grouped.$this?.filter(i => !i.title.includes('.DS'))
         .map((i: TemplateFile) => ({
@@ -115,7 +115,7 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
       {loading && <div><Spinner size={SpinnerSize.large} label='Loading Templates...' labelPosition='top' /></div>}
       {!loading && <>
         <TreeView
-          items={groupItems(filteredtemplateFiles.length > 0 ? filteredtemplateFiles : templateFiles)}
+          items={makeFolderStructure(filteredtemplateFiles.length > 0 ? filteredtemplateFiles : templateFiles)}
           defaultExpandedChildren={false}
           showCheckboxes={true}
           defaultExpanded={false}
