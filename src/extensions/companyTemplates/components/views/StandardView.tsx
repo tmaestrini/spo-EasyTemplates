@@ -64,9 +64,8 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
   }
 
   const onRenderItem = (treeItem: ITreeItem): JSX.Element => {
-    const { data } = treeItem;
+    const { data }: { data?: TemplateFile } = treeItem;
 
-    console.log(data.category);
     if (data.type === 'Folder') {
       return <div className={styles.treeNode}>
         <Icon {...getFileTypeIconProps({ type: FileIconType.folder, size: 16, imageFileType: 'png' })} />
@@ -84,7 +83,7 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
           {new Date(data?.modified).toLocaleDateString()}
         </StackItem> */}
         <StackItem>
-          {data.category && <Text variant='xSmall' className={styles.category}>{data.category}</Text>}
+          {data.categories && data.categories.map(category => <Text variant='xSmall' className={styles.category}>{category}</Text>)}
         </StackItem>
       </Stack>
     </div >;
