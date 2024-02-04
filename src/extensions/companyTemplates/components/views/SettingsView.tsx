@@ -1,14 +1,16 @@
 import * as React from 'react';
 import { useContext } from 'react';
 import { SPFxContext } from '../../contexts/SPFxContext';
-import { MessageBar, MessageBarType, PrimaryButton, Stack } from '@fluentui/react';
+import { DefaultButton, MessageBar, MessageBarType, PrimaryButton, Stack, Text } from '@fluentui/react';
 import { StandardView } from './StandardView';
+import styles from '../CompanyTemplates.module.scss'
 import { ISite, SitePicker } from "@pnp/spfx-controls-react/lib/SitePicker";
 import { ListPicker } from "@pnp/spfx-controls-react/lib/ListPicker";
 import { SPFx, spfi } from "@pnp/sp";
 import "@pnp/sp/appcatalog";
 import "@pnp/sp/webs";
 import { UserService } from '../../../../services/core/UserService';
+import { SettingsTemplateDefinition } from '../SettingsTemplateDefinition';
 
 export interface ISettingsViewProps {
   onNavigationExit: (destination: React.ReactNode) => void;
@@ -17,28 +19,22 @@ export interface ISettingsViewProps {
 export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props: React.PropsWithChildren<ISettingsViewProps>) => {
   const context = useContext(SPFxContext).context;
   const [userToken, setUserToken] = React.useState(undefined);
-  const [settings, setSettings] = React.useState<{ site: string, list: string }>({ site: undefined, list: undefined });
+  const [settings, setSettings] = React.useState<{ site?: string, list?: string, categoryField?: { Id: string; InternalName: string; } }>({ site: undefined, list: undefined, categoryField: undefined });
   const [processState, setProcess] = React.useState({ saveInProgress: false, error: null });
-
-
-  async function storeListSettings(): Promise<void> {
-    const sp = spfi().using(SPFx(context));
-    const w = await sp.getTenantAppCatalogWeb();
-
-    // specify required key and value
-    await w.setStorageEntity("easyTemplatesListUrl", settings.site);
-    await w.setStorageEntity("easyTemplatesLibraryId", settings.list);
-
-    console.log('List selection saved');
-  }
 
   React.useEffect(() => {
     async function fetchListSettings(): Promise<void> {
       const sp = spfi().using(SPFx(context));
-      const web = await sp.getTenantAppCatalogWeb();
-      const listUrl = await web.getStorageEntity("easyTemplatesListUrl");
-      const listId = await web.getStorageEntity("easyTemplatesLibraryId");
-      setSettings({ site: listUrl.Value, list: listId.Value });
+      // const web = await sp.getTenantAppCatalogWeb();
+      try {
+        const settingsData = (await sp.web.getStorageEntity("easyTemplatesSettings"))?.Value;
+        if (settingsData) {
+          const settings = JSON.parse(settingsData);
+          setSettings({ site: settings.site, list: settings.list, categoryField: settings.categoryField });
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
 
     fetchListSettings().catch(error => console.log(error));
@@ -51,6 +47,15 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
       .catch((error) => setProcess({ ...processState, error }));
   }, []);
 
+  async function storeListSettings(): Promise<void> {
+    const sp = spfi().using(SPFx(context));
+    const w = await sp.getTenantAppCatalogWeb();
+
+    // specify required key and value
+    await w.setStorageEntity("easyTemplatesSettings", JSON.stringify({ categoryField: settings.categoryField, site: settings.site, list: settings.list }));
+    console.log('Settings saved:');
+    console.log(settings)
+  }
 
   function trySaving(): void {
     setProcess({ ...processState, saveInProgress: true });
@@ -59,48 +64,64 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
       .catch(error => setProcess({ saveInProgress: false, error: error }));
   }
 
+  function cancelSettings(): void {
+    props.onNavigationExit(<StandardView />);
+  }
+
   return (
     <>
-      <h1 key={'title'}>Settings</h1>
-      <Stack tokens={{
-        childrenGap: 10,
-        padding: 10,
-        maxWidth: '50%'
-      }}>
+      <h2 className={`od-ItemContent-title ${styles.dialogTitle}`} key={'title'}>Settings</h2>
+      {userToken && <span>TenantId: {userToken.tid}</span>}
 
-        {userToken && <span>TenantId: {userToken.tid}</span>}
-        {processState.error &&
-          <MessageBar
-            messageBarType={MessageBarType.error}
-            isMultiline={false}>{processState.error}</MessageBar>}
-        {(processState.saveInProgress && !processState.error) &&
-          <MessageBar
-            messageBarType={MessageBarType.info}
-            isMultiline={false}>Saving in progress...</MessageBar>}
+      <Stack horizontal tokens={{ childrenGap: 10 }} style={{ verticalAlign: 'top', justifyContent: 'space-between' }}>
+        <Stack style={{ width: '49%' }} tokens={{
+          childrenGap: 10,
+          maxWidth: '49%'
+        }}>
+          <h3 key={'title-template-repository'} className={styles.dialogSubtitle}>Template Repository</h3>
+          <Text>Select the SharePoint site and list that contains your templates. It makes perfect sense if you plan to <a href="https://learn.microsoft.com/en-us/sharepoint/organization-assets-library" target='_blank' rel="noreferrer noopener" data-interception="off">use an organization assets library (as <strong>OfficeTemplateLibrary</strong>)</a> to manage your template management.</Text>
+          {processState.error &&
+            <MessageBar
+              messageBarType={MessageBarType.error}
+              isMultiline={false}>{processState.error}</MessageBar>}
+          {(processState.saveInProgress && !processState.error) &&
+            <MessageBar
+              messageBarType={MessageBarType.info}
+              isMultiline={false}>Saving in progress...</MessageBar>}
+          <SitePicker
+            context={context as any}
+            label={'Select site'}
+            mode={'site'}
+            allowSearch={true}
+            multiSelect={false}
+            selectedSites={[{ url: settings.site }] as ISite[]}
+            onChange={(sites) => { setSettings({ site: sites[0].url, list: undefined, categoryField: undefined }) }}
+            placeholder={'Select sites'}
+            searchPlaceholder={'Filter sites'} />
 
-        <SitePicker
-          context={context as any}
-          label={'Select sites'}
-          mode={'site'}
-          allowSearch={true}
-          multiSelect={false}
-          selectedSites={[{ url: settings.site }] as ISite[]}
-          onChange={(sites) => { setSettings({ ...settings, site: sites[0].url }) }}
-          placeholder={'Select sites'}
-          searchPlaceholder={'Filter sites'} />
+          <ListPicker context={context as any}
+            label="Select your list"
+            placeHolder="Select your list that stores your templates"
+            filter="BaseTemplate eq 101 and EntityTypeName ne 'FormServerTemplates' and EntityTypeName ne 'SiteAssets' and EntityTypeName ne 'Style_x0020_Library'"
+            includeHidden={false}
+            multiSelect={false}
+            disabled={settings.site === undefined}
+            webAbsoluteUrl={settings.site && settings.site}
+            selectedList={settings.list}
+            onSelectionChanged={value => setSettings({ ...settings, list: value as string, categoryField: undefined })} />
 
-        <ListPicker context={context as any}
-          label="Select your list(s)"
-          placeHolder="Select your list(s)"
-          filter="BaseTemplate eq 101 and EntityTypeName ne 'FormServerTemplates' and EntityTypeName ne 'SiteAssets' and EntityTypeName ne 'Style_x0020_Library'"
-          includeHidden={false}
-          multiSelect={false}
-          disabled={settings.site === undefined}
-          webAbsoluteUrl={settings.site && settings.site}
-          selectedList={settings.list}
-          onSelectionChanged={value => setSettings({ ...settings, list: value as string })} />
-
+        </Stack>
+        <Stack style={{ width: '49%' }} tokens={{
+          childrenGap: 10,
+          maxWidth: '49%'
+        }}>
+          <h3 key={'title-template-definition'} className={styles.dialogSubtitle}>Template definition</h3>
+          <SettingsTemplateDefinition settings={settings} changeSettingsCallback={setSettings} />
+        </Stack>
+      </Stack>
+      <Stack style={{ marginTop: '2em', width: '25%' }} tokens={{ childrenGap: 10 }}>
         <PrimaryButton disabled={processState.saveInProgress} text="Save Settings" onClick={trySaving.bind(this)} allowDisabledFocus />
+        <DefaultButton text="Cancel" onClick={cancelSettings.bind(this)} allowDisabledFocus />
       </Stack>
     </>
   );

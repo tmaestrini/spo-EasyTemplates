@@ -63,7 +63,7 @@ export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (pr
   return <CommandBar
     items={commandBarItems}
     farItems={commandBarFarItems}
-    ariaLabel="Inbox actions"
+    ariaLabel="Template actions"
     styles={{ root: { borderBottom: '1px solid #edebe9', borderTop: '1px solid #edebe9' } }}
   />
 

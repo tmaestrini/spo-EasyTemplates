@@ -38,17 +38,35 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
   async function initSourceList(): Promise<void> {
     setLoading(true);
     const sp = spfi().using(SPFx(context));
-    const listUrl = await sp.web.getStorageEntity("easyTemplatesListUrl");
-    const listId = await sp.web.getStorageEntity("easyTemplatesLibraryId");
-    console.log(listId.Value);
-    console.log(listUrl.Value);
+    // const listUrl = await sp.web.getStorageEntity("easyTemplatesListUrl");
+    // const listId = await sp.web.getStorageEntity("easyTemplatesLibraryId");
+    // const categoryFieldId = await sp.web.getStorageEntity("easyTemplatesCategoryFieldId");
+    // console.log(listId.Value);
+    // console.log(listUrl.Value);
+    // console.log(categoryFieldId.Value);
+    // setListParams({ context, webUrl: listUrl.Value, listId: listId.Value });
+    // setLoading(false);
 
-    setListParams({ context, listId: listId.Value, webUrl: listUrl.Value });
-    setLoading(false);
+    try {
+      const settingsData = (await sp.web.getStorageEntity("easyTemplatesSettings"))?.Value;
+      if (settingsData) {
+        const settings = JSON.parse(settingsData);
+        console.log(settings);
+        setListParams({ context, webUrl: settings.site, listId: settings.list, categoryField: settings.categoryField });
+        setLoading(false);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    // finally {
+    //   setLoading(false);
+    // }
   }
 
   const onRenderItem = (treeItem: ITreeItem): JSX.Element => {
     const { data } = treeItem;
+
+    console.log(data.category);
     if (data.type === 'Folder') {
       return <div className={styles.treeNode}>
         <Icon {...getFileTypeIconProps({ type: FileIconType.folder, size: 16, imageFileType: 'png' })} />
@@ -66,7 +84,7 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
           {new Date(data?.modified).toLocaleDateString()}
         </StackItem> */}
         <StackItem>
-          <Text variant='xSmall' className={styles.category}>Kategorie</Text>
+          {data.category && <Text variant='xSmall' className={styles.category}>{data.category}</Text>}
         </StackItem>
       </Stack>
     </div >;
