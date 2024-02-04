@@ -25,7 +25,6 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
   React.useEffect(() => {
     async function fetchListSettings(): Promise<void> {
       const sp = spfi().using(SPFx(context));
-      // const web = await sp.getTenantAppCatalogWeb();
       try {
         const settingsData = (await sp.web.getStorageEntity("easyTemplatesSettings"))?.Value;
         if (settingsData) {

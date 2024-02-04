@@ -11,7 +11,6 @@ export type SettingsTemplateDefinitionProps = {
 }
 export const SettingsTemplateDefinition: React.FunctionComponent<SettingsTemplateDefinitionProps> = (props: SettingsTemplateDefinitionProps) => {
   const { context } = React.useContext(SPFxContext);
-  // const [settings, setSettings] = React.useState<{ field: string }>({ field: undefined });
 
   const onFieldPickerChanged = (fields: ISPField | ISPField[]): void => {
     const fieldData = fields as ISPField;

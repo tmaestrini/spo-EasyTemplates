@@ -38,15 +38,6 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
   async function initSourceList(): Promise<void> {
     setLoading(true);
     const sp = spfi().using(SPFx(context));
-    // const listUrl = await sp.web.getStorageEntity("easyTemplatesListUrl");
-    // const listId = await sp.web.getStorageEntity("easyTemplatesLibraryId");
-    // const categoryFieldId = await sp.web.getStorageEntity("easyTemplatesCategoryFieldId");
-    // console.log(listId.Value);
-    // console.log(listUrl.Value);
-    // console.log(categoryFieldId.Value);
-    // setListParams({ context, webUrl: listUrl.Value, listId: listId.Value });
-    // setLoading(false);
-
     try {
       const settingsData = (await sp.web.getStorageEntity("easyTemplatesSettings"))?.Value;
       if (settingsData) {

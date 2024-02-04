@@ -65,7 +65,7 @@ export function useTemplateFiles(initialValues: TemplateParams): { templateFiles
             .substring(ParentWebUrl.length + 1)
             .split('/').slice(1),
         };
-
+        // category handling
         const categories = templateStoreParams.categoryField?.InternalName && f[templateStoreParams.categoryField.InternalName];
         if(categories && Array.isArray(f[templateStoreParams.categoryField.InternalName])) data.categories = categories;
         else if(categories && typeof (f[templateStoreParams.categoryField.InternalName]) === 'string') data.categories = [categories];
