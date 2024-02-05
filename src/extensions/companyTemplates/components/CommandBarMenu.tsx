@@ -8,7 +8,7 @@ type ICommandBarMenuProps = {
 }
 
 export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (props: React.PropsWithChildren<ICommandBarMenuProps>) => {
-  const { selectedFiles, checkoutFiles, setTemplateValueFilter } = React.useContext(TemplatesManagementContext);
+  const { templateFilesByCategory, selectedFiles, checkoutFiles, setTemplateValueFilter, setTemplateCategoriesFilter } = React.useContext(TemplatesManagementContext);
   const { pageNavigationHandler } = props;
 
   function clearCommandBarValues(): void {
@@ -18,23 +18,16 @@ export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (pr
 
   const commandBarItems: ICommandBarItemProps[] = [
     {
-      key: 'filterTemplates',
-      text: 'Alle Templates',
+      key: 'filterTemplateCategories',
+      text: 'Kategorien filtern',
       cacheKey: 'allTemplatesFilterCacheKey', // changing this key will invalidate this item's cache
       iconProps: { iconName: 'Filter' },
       subMenuProps: {
-        items: [
-          {
-            key: 'filterAllTemplates',
-            text: 'Alle Templates',
-            onClick: () => console.log('Filter all templates'),
-          },
-          {
-            key: 'filterBasicTemplates',
-            text: 'Basic Templates',
-            onClick: () => console.log('Filter basic templates'),
-          },
-        ]
+        items: templateFilesByCategory ? Object.keys(templateFilesByCategory).sort().map((category) => ({
+          key: category,
+          text: category,
+          onClick: () => { console.log(category); setTemplateCategoriesFilter([category]); },
+        })) : [],
       }
     },
     {
@@ -59,6 +52,7 @@ export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (pr
       onClick: () => { clearCommandBarValues(); pageNavigationHandler(<SettingsView onNavigationExit={pageNavigationHandler} />); },
     },
   ];
+
 
   return <CommandBar
     items={commandBarItems}

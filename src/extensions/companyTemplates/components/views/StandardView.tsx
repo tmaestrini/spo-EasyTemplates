@@ -1,30 +1,22 @@
 import * as React from 'react';
 import { useContext } from 'react';
 import { groupBy } from '@microsoft/sp-lodash-subset';
-import { SPFxContext } from '../../contexts/SPFxContext';
 import { TemplatesManagementContext } from '../../contexts/TemplatesManagementContext';
 import { Icon, Spinner, SpinnerSize, Stack, StackItem, Text } from '@fluentui/react';
 import { FileIconType, getFileTypeIconProps } from '@fluentui/react-file-type-icons';
 import styles from '../CompanyTemplates.module.scss'
 import { ITreeItem, TreeView, TreeViewSelectionMode } from '@pnp/spfx-controls-react/lib/TreeView';
-import { SPFx, spfi } from '@pnp/sp';
 import "@pnp/sp/items/get-all";
 import "@pnp/sp/items";
-import { TemplateFile, useTemplateFiles } from '../../../../hooks/useTemplateFiles';
+import { TemplateFile } from '../../../../hooks/useTemplateFiles';
 
 
 export interface ITemplateViewProps { }
 
 export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props: React.PropsWithChildren<ITemplateViewProps>) => {
-  const context = useContext(SPFxContext).context;
-  const { templateFiles, setListParams } = useTemplateFiles({ context, listId: undefined, webUrl: undefined });
-  const { checkoutFiles, templateFilter } = useContext(TemplatesManagementContext);
-  const [loading, setLoading] = React.useState(true);
+  const { templateFiles, checkoutFiles, templateFilter } = useContext(TemplatesManagementContext);
   const [filteredtemplateFiles, setFilteredtemplateFiles] = React.useState<TemplateFile[]>(templateFiles);
 
-  React.useEffect(() => {
-    initSourceList().catch(error => console.log(error));
-  }, []);
 
   React.useEffect(() => {
     const filtered = templateFiles
@@ -35,24 +27,15 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
     setFilteredtemplateFiles(filtered);
   }, [templateFilter.value]);
 
-  async function initSourceList(): Promise<void> {
-    setLoading(true);
-    const sp = spfi().using(SPFx(context));
-    try {
-      const settingsData = (await sp.web.getStorageEntity("easyTemplatesSettings"))?.Value;
-      if (settingsData) {
-        const settings = JSON.parse(settingsData);
-        console.log(settings);
-        setListParams({ context, webUrl: settings.site, listId: settings.list, categoryField: settings.categoryField });
-        setLoading(false);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-    // finally {
-    //   setLoading(false);
-    // }
-  }
+  React.useEffect(() => {
+    console.log("filter categories: " + templateFilter.categories);
+    const filtered = templateFiles
+      .filter(file => {
+        return file.categories?.some(category => category.toLowerCase() === templateFilter.categories[0].toLowerCase());
+      });
+    setFilteredtemplateFiles(filtered);
+  }, [templateFilter.categories]);
+
 
   const onRenderItem = (treeItem: ITreeItem): JSX.Element => {
     const { data }: { data?: TemplateFile } = treeItem;
@@ -120,8 +103,8 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
   return (
     <div>
       <h2 className={`od-ItemContent-title ${styles.dialogTitle}`} key={'title'}>Template View (Standard)</h2>
-      {loading && <div><Spinner size={SpinnerSize.large} label='Loading Templates...' labelPosition='top' /></div>}
-      {!loading && <>
+      {!templateFiles && <div><Spinner size={SpinnerSize.large} label='Loading Templates...' labelPosition='top' /></div>}
+      {templateFiles.length > 0 && <>
         <TreeView
           items={makeFolderStructure(filteredtemplateFiles.length > 0 ? filteredtemplateFiles : templateFiles)}
           defaultExpandedChildren={false}

@@ -24,9 +24,15 @@ export type TemplateParams = {
   categoryField?: { Id: string; InternalName: string; };
 }
 
-export function useTemplateFiles(initialValues: TemplateParams): { templateFiles: TemplateFile[], setListParams: (newParams: TemplateParams) => void, templateStore: TemplateParams } {
+export function useTemplateFiles(initialValues: TemplateParams): {
+  templateFiles: TemplateFile[],
+  templateFilesByCategory: { [key: string]: TemplateFile[] }[],
+  templateStore: TemplateParams,
+  initWithListParams: (newParams: TemplateParams) => void,
+} {
   const [templateStoreParams, setParams] = useState<TemplateParams>({ ...initialValues });
   const [files, setFiles] = useState<TemplateFile[]>([]);
+  const [filesGroupedByCategory, setGroupedFiles] = useState<{ [key: string]: TemplateFile[] }[]>([]);
 
   function setListParams(newParams: TemplateParams): void {
     setParams(newParams);
@@ -50,7 +56,7 @@ export function useTemplateFiles(initialValues: TemplateParams): { templateFiles
       // .expand("FieldValuesAsText")
       .getAll())
       .map((f) => {
-        const data:TemplateFile = {
+        const data: TemplateFile = {
           id: f.UniqueId,
           title: !isEmpty(f.Title) ? f.Title : f.FileLeafRef,
           type: f.FSObjType === 1 ? 'Folder' : 'File',
@@ -67,12 +73,23 @@ export function useTemplateFiles(initialValues: TemplateParams): { templateFiles
         };
         // category handling
         const categories = templateStoreParams.categoryField?.InternalName && f[templateStoreParams.categoryField.InternalName];
-        if(categories && Array.isArray(f[templateStoreParams.categoryField.InternalName])) data.categories = categories;
-        else if(categories && typeof (f[templateStoreParams.categoryField.InternalName]) === 'string') data.categories = [categories];
-        
+        if (categories && Array.isArray(f[templateStoreParams.categoryField.InternalName])) data.categories = categories;
+        else if (categories && typeof (f[templateStoreParams.categoryField.InternalName]) === 'string') data.categories = [categories];
+
         return data;
       });
     return fileItems;
+  }
+
+  function groupByCategory(files: TemplateFile[]): void {
+    const grouped = files.reduce((acc: any, cur: TemplateFile) => {
+      cur.categories?.forEach((c: string) => {
+        if (!acc[c]) acc[c] = [];
+        acc[c].push(cur);
+      })
+      return acc;
+    }, {});
+    setGroupedFiles(grouped);
   }
 
   useEffect(() => {
@@ -80,9 +97,10 @@ export function useTemplateFiles(initialValues: TemplateParams): { templateFiles
     if (!listId || !webUrl || !context) return;
 
     readFilesFromSettings()
-      .then(res => { setFiles(res); })
+      .then(res => { setFiles(res); return res; })
+      .then(res => { groupByCategory(res) })
       .catch(error => console.log(error));
   }, [templateStoreParams]);
 
-  return { templateFiles: files, setListParams, templateStore: templateStoreParams };
+  return { templateFiles: files, templateFilesByCategory: filesGroupedByCategory, initWithListParams: setListParams, templateStore: templateStoreParams };
 }
