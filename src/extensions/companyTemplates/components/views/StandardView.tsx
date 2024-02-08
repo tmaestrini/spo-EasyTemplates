@@ -17,7 +17,7 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
   const { templateFiles, checkoutFiles, templateFilter } = useContext(TemplatesManagementContext);
   const [filteredtemplateFiles, setFilteredtemplateFiles] = React.useState<TemplateFile[]>(templateFiles);
 
-  // Template Filterin
+  // Template Filtering
   React.useEffect(() => {
     let filtered = templateFiles
     if (templateFilter.categories?.length > 0) {
@@ -32,8 +32,6 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
     });
     setFilteredtemplateFiles(filtered);
   }, [templateFilter.value, templateFilter.categories, templateFiles]);
-
-
 
   const onRenderItem = (treeItem: ITreeItem): JSX.Element => {
     const { data }: { data?: TemplateFile } = treeItem;
