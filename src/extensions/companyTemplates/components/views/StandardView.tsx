@@ -17,24 +17,22 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
   const { templateFiles, checkoutFiles, templateFilter } = useContext(TemplatesManagementContext);
   const [filteredtemplateFiles, setFilteredtemplateFiles] = React.useState<TemplateFile[]>(templateFiles);
 
-
+  // Template Filterin
   React.useEffect(() => {
-    const filtered = templateFiles
-      .filter(file => {
-        return file.title.toLowerCase().includes(templateFilter.value?.toLowerCase() ?? '')
-          || file.fileLeafRef.toLowerCase().includes(templateFilter.value?.toLowerCase() ?? '');
-      });
+    let filtered = templateFiles
+    if (templateFilter.categories?.length > 0) {
+      filtered = filtered
+        .filter(file => {
+          return file.categories?.some(category => category.toLowerCase() === templateFilter?.categories[0].toLowerCase());
+        });
+    }
+    filtered = filtered.filter(file => {
+      return file.title.toLowerCase().includes(templateFilter.value?.toLowerCase() ?? '')
+        || file.fileLeafRef.toLowerCase().includes(templateFilter.value?.toLowerCase() ?? '');
+    });
     setFilteredtemplateFiles(filtered);
-  }, [templateFilter.value]);
+  }, [templateFilter.value, templateFilter.categories, templateFiles]);
 
-  React.useEffect(() => {
-    console.log("filter categories: " + templateFilter.categories);
-    const filtered = templateFiles
-      .filter(file => {
-        return file.categories?.some(category => category.toLowerCase() === templateFilter.categories[0].toLowerCase());
-      });
-    setFilteredtemplateFiles(filtered);
-  }, [templateFilter.categories]);
 
 
   const onRenderItem = (treeItem: ITreeItem): JSX.Element => {
@@ -106,7 +104,7 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
       {!templateFiles && <div><Spinner size={SpinnerSize.large} label='Loading Templates...' labelPosition='top' /></div>}
       {templateFiles.length > 0 && <>
         <TreeView
-          items={makeFolderStructure(filteredtemplateFiles.length > 0 ? filteredtemplateFiles : templateFiles)}
+          items={makeFolderStructure(filteredtemplateFiles)}
           defaultExpandedChildren={false}
           showCheckboxes={true}
           defaultExpanded={false}
