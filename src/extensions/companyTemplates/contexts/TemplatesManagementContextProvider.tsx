@@ -8,7 +8,7 @@ type TemplatesManagementContextProviderProps = {}
 
 export const TemplatesManagementContextProvider: React.FC<TemplatesManagementContextProviderProps> = (props: React.PropsWithChildren<TemplatesManagementContextProviderProps>) => {
   const context = React.useContext(SPFxContext).context;
-  const { templateFiles, templateFilesByCategory, initWithListParams } = useTemplateFiles({ context, listId: undefined, webUrl: undefined });
+  const { templateFiles, templateFilesByCategory, initWithListParams } = useTemplateFiles({ listId: undefined, webUrl: undefined });
   const [selectedTemplateFiles, setSelectedTemplateFiles] = React.useState<TemplateFile[]>([]);
   const [filterTemplateValue, setTemplateValueFilter] = React.useState('');
   const [filterTemplateCategories, setTemplateCategoriesFilter] = React.useState([]);
@@ -35,7 +35,7 @@ export const TemplatesManagementContextProvider: React.FC<TemplatesManagementCon
       const settingsData = (await sp.web.getStorageEntity("easyTemplatesSettings"))?.Value;
       if (settingsData) {
         const settings = JSON.parse(settingsData);
-        initWithListParams({ context, webUrl: settings.site, listId: settings.list, categoryField: settings.categoryField });
+        initWithListParams({ webUrl: settings.site, listId: settings.list, categoryField: settings.categoryField });
       }
     } catch (err) {
       console.log(err);

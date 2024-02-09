@@ -11,7 +11,7 @@ export class UserService implements IUserService {
   private aadTokenProviderFactory: AadTokenProviderFactory;
 
   public static readonly serviceKey: ServiceKey<IUserService> =
-    ServiceKey.create<IUserService>('CompanyTemplates:UserService', UserService);
+    ServiceKey.create<IUserService>('CompanyTemplates.UserService', UserService);
 
   constructor(serviceScope: ServiceScope) {
     serviceScope.whenFinished(() => {

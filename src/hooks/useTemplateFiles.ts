@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
-import { isEmpty } from '@microsoft/sp-lodash-subset';
-import { BaseComponentContext } from "@microsoft/sp-component-base";
-import { SPFx, Web, spfi } from '@pnp/sp/presets/all';
+import { useContext, useEffect, useState } from 'react';
+import { TemplateParams, TemplateService } from '../services/core/TemplateService';
+import { SPFxContext } from '../extensions/companyTemplates/contexts/SPFxContext';
 
 
 export type TemplateFile = {
@@ -17,12 +16,6 @@ export type TemplateFile = {
   categories?: string[];
 }
 
-export type TemplateParams = {
-  context: BaseComponentContext;
-  webUrl: string;
-  listId: string;
-  categoryField?: { Id: string; InternalName: string; };
-}
 
 export function useTemplateFiles(initialValues: TemplateParams): {
   templateFiles: TemplateFile[],
@@ -34,51 +27,18 @@ export function useTemplateFiles(initialValues: TemplateParams): {
   const [files, setFiles] = useState<TemplateFile[]>([]);
   const [filesGroupedByCategory, setGroupedFiles] = useState<{ [key: string]: TemplateFile[] }[]>([]);
 
+  const { context } = useContext(SPFxContext);
+  const templateService = context.serviceScope.consume(TemplateService.serviceKey)
+
   function setListParams(newParams: TemplateParams): void {
     setParams(newParams);
   }
 
   async function readFilesFromSettings(): Promise<TemplateFile[]> {
-    const { context, webUrl, listId } = templateStoreParams;
-    const sp = spfi().using(SPFx(context));
-    const { WebFullUrl } = await sp.web.getContextInfo(webUrl);
-    const sourceWeb = Web([sp.web, decodeURI(WebFullUrl)]);
-    const sourceList = sourceWeb.lists.getById(listId);
+    const { webUrl, listId, categoryField } = templateStoreParams;
 
-    const { ParentWebUrl } = await sourceList();
-    const fileItems = (await sourceList.items
-      .select('Title', 'FileRef', 'FSObjType',
-        'BaseName', 'ServerUrl', 'DocIcon',
-        'LinkFilename', 'UniqueId', 'FileDirRef',
-        templateStoreParams.categoryField?.InternalName ? `${templateStoreParams.categoryField.InternalName}` : '',
-        'File_x0020_Type', 'FileLeafRef', 'Modified', /*"FieldValuesAsText"*/)
-      .filter("FSObjType eq 0")
-      // .expand("FieldValuesAsText")
-      .getAll())
-      .map((f) => {
-        const data: TemplateFile = {
-          id: f.UniqueId,
-          title: !isEmpty(f.Title) ? f.Title : f.FileLeafRef,
-          type: f.FSObjType === 1 ? 'Folder' : 'File',
-          fileType: f.File_x0020_Type,
-          fileRef: f.FileRef,
-          fileLeafRef: f.FileLeafRef,
-          filePath: f.FileRef
-            .substring(ParentWebUrl.length + 1)
-            .split('/').slice(1).join('/'),
-          modified: f.Modified,
-          pathSegments: f.FileRef
-            .substring(ParentWebUrl.length + 1)
-            .split('/').slice(1),
-        };
-        // category handling
-        const categories = templateStoreParams.categoryField?.InternalName && f[templateStoreParams.categoryField.InternalName];
-        if (categories && Array.isArray(f[templateStoreParams.categoryField.InternalName])) data.categories = categories;
-        else if (categories && typeof (f[templateStoreParams.categoryField.InternalName]) === 'string') data.categories = [categories];
-
-        return data;
-      });
-    return fileItems;
+    const templateFiles = await templateService.getTemplates({ webUrl: webUrl, listId: listId, categoryField: categoryField });
+    return templateFiles;
   }
 
   function groupByCategory(files: TemplateFile[]): void {
@@ -93,7 +53,7 @@ export function useTemplateFiles(initialValues: TemplateParams): {
   }
 
   useEffect(() => {
-    const { listId, webUrl, context } = templateStoreParams;
+    const { listId, webUrl} = templateStoreParams;
     if (!listId || !webUrl || !context) return;
 
     readFilesFromSettings()
