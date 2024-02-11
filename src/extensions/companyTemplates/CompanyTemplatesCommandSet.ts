@@ -10,11 +10,12 @@ import DialogWrapper from './components/DialogWrapper';
 import * as React from 'react';
 import { CompanyTemplates } from './components/CompanyTemplates';
 import { SPFxContext } from './contexts/SPFxContext';
+import * as strings from 'CompanyTemplatesCommandSetStrings';
 
 export interface ICompanyTemplatesCommandSetProperties { }
 
 const LOG_SOURCE: string = 'CompanyTemplatesCommandSet';
-
+console.log(strings);
 export default class CompanyTemplatesCommandSet extends BaseListViewCommandSet<ICompanyTemplatesCommandSetProperties> {
 
   public onInit(): Promise<void> {
