@@ -14,7 +14,7 @@ import { TemplateFile } from '../../../../hooks/useTemplateFiles';
 export interface ITemplateViewProps { }
 
 export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props: React.PropsWithChildren<ITemplateViewProps>) => {
-  const { templateFiles, checkoutFiles, templateFilter } = useContext(TemplatesManagementContext);
+  const { templateFiles, checkoutFiles, templateFilter, loading } = useContext(TemplatesManagementContext);
   const [filteredtemplateFiles, setFilteredtemplateFiles] = React.useState<TemplateFile[]>(templateFiles);
 
   // Template Filtering
@@ -99,8 +99,9 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
   return (
     <div>
       <h2 className={`od-ItemContent-title ${styles.dialogTitle}`} key={'title'}>Template View (Standard)</h2>
-      {!templateFiles && <div><Spinner size={SpinnerSize.large} label='Loading Templates...' labelPosition='top' /></div>}
-      {templateFiles.length > 0 && <>
+      {loading && <div><Spinner size={SpinnerSize.large} label='Loading Templates...' labelPosition='top' /></div>}
+      {!loading && templateFiles.length === 0 && <div>No templates found. Please specify configuration first.</div>}
+      {!loading && templateFiles.length > 0 && <>
         <TreeView
           items={makeFolderStructure(filteredtemplateFiles)}
           defaultExpandedChildren={false}

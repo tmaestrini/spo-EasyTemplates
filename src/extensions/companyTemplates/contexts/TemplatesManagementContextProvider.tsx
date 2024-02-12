@@ -8,11 +8,10 @@ type TemplatesManagementContextProviderProps = {}
 
 export const TemplatesManagementContextProvider: React.FC<TemplatesManagementContextProviderProps> = (props: React.PropsWithChildren<TemplatesManagementContextProviderProps>) => {
   const context = React.useContext(SPFxContext).context;
-  const { templateFiles, templateFilesByCategory, initWithListParams } = useTemplateFiles({ listId: undefined, webUrl: undefined });
+  const { templateFiles, templateFilesByCategory, loading, initWithListParams } = useTemplateFiles({ listId: undefined, webUrl: undefined });
   const [selectedTemplateFiles, setSelectedTemplateFiles] = React.useState<TemplateFile[]>([]);
   const [filterTemplateValue, setTemplateValueFilter] = React.useState('');
   const [filterTemplateCategories, setTemplateCategoriesFilter] = React.useState([]);
-
 
   const addTemplateFilesToSelection = (files: any[]): void => {
     setSelectedTemplateFiles([]);
@@ -47,7 +46,7 @@ export const TemplatesManagementContextProvider: React.FC<TemplatesManagementCon
   }, []);
 
   return <TemplatesManagementContext.Provider value={{
-    templateFiles, templateFilesByCategory,
+    templateFiles, templateFilesByCategory, loading,
     selectedFiles: selectedTemplateFiles, checkoutFiles: addTemplateFilesToSelection,
     templateFilter: { value: filterTemplateValue, categories: filterTemplateCategories }, setTemplateValueFilter: filterTemplateByValue,
     setTemplateCategoriesFilter: filterTemplateByCatgegories,

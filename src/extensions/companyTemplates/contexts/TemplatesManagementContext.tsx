@@ -5,6 +5,7 @@ import { TemplateFile } from "../../../hooks/useTemplateFiles";
 type TemplatesManagementContextState = {
   templateFiles?: TemplateFile[];
   templateFilesByCategory?: { [key: string]: TemplateFile[] }[];
+  loading: boolean;
 
   templateFilter?: { value?: string, categories?: string[] };
   setTemplateValueFilter?: (value: string) => void;
@@ -15,6 +16,6 @@ type TemplatesManagementContextState = {
 }
 
 export const TemplatesManagementContext = React.createContext<TemplatesManagementContextState>({
-  templateFiles: [], templateFilesByCategory: [],
+  templateFiles: [], templateFilesByCategory: [], loading: true,
   selectedFiles: [], checkoutFiles: undefined, templateFilter: { value: undefined, categories: [] },
 });
