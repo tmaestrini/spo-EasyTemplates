@@ -18,7 +18,8 @@ export interface ISettingsViewProps {
 
 export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props: React.PropsWithChildren<ISettingsViewProps>) => {
   const context = useContext(SPFxContext).context;
-  const [userToken, setUserToken] = React.useState(undefined);
+  const [userToken, setUserToken] = React.useState<any>(undefined);
+  const [userData, setUserData] = React.useState<any>(undefined);
   const [settings, setSettings] = React.useState<{ site?: string, list?: string, categoryField?: { Id: string; InternalName: string; } }>({ site: undefined, list: undefined, categoryField: undefined });
   const [processState, setProcess] = React.useState({ saveInProgress: false, error: null });
 
@@ -44,6 +45,10 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
     userService.getUserTokenDecoded()
       .then((token) => { setUserToken(token) })
       .catch((error) => setProcess({ ...processState, error }));
+
+    userService.getUserData()
+      .then((data) => { setUserData(data) })
+      .catch((error) => console.log(error));
   }, []);
 
   async function storeListSettings(): Promise<void> {
@@ -67,10 +72,12 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
     props.onNavigationExit(<StandardView />);
   }
 
+  console.log(userToken);
   return (
     <>
       <h2 className={`od-ItemContent-title ${styles.dialogTitle}`} key={'title'}>Settings</h2>
-      {userToken && <span>TenantId: {userToken.tid}</span>}
+      {/* {userToken && <span>TenantId: {userToken.tid}</span>} */}
+      {userData && <span><br />Current User: {userData.displayName}</span>}
 
       <Stack horizontal tokens={{ childrenGap: 10 }} style={{ verticalAlign: 'top', justifyContent: 'space-between' }}>
         <Stack style={{ width: '49%' }} tokens={{
@@ -100,7 +107,7 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
 
           <ListPicker context={context as any}
             label="Select your list"
-            placeHolder="Select your list that stores your templates"
+            placeholder="Select your list that stores your templates"
             filter="BaseTemplate eq 101 and EntityTypeName ne 'FormServerTemplates' and EntityTypeName ne 'SiteAssets' and EntityTypeName ne 'Style_x0020_Library'"
             includeHidden={false}
             multiSelect={false}
