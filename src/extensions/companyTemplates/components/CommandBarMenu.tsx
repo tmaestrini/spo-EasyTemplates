@@ -4,6 +4,7 @@ import { SettingsView } from "./views";
 import { TemplatesManagementContext } from "../contexts/TemplatesManagementContext";
 import { TemplateFile } from "../../../hooks/useTemplateFiles";
 import { CopyTemplatesButton } from "./CopyTemplatesButton";
+import { ProgressStatus } from "./ProgressStatus";
 
 type ICommandBarMenuProps = {
   pageNavigationHandler: (page: React.ReactNode) => void;
@@ -26,9 +27,9 @@ function CategoryFilter(props: { templateFilesByCategory: { [key: string]: Templ
     }
   };
 
-  const onRenderCaretDown = (props: IDropdownProps): JSX.Element => {
+  const onRenderCaretDown = (): JSX.Element => {
     return <>
-      {selectedKeys.length > 0 && <Icon iconName="Clear" styles={{ root: { cursor: 'pointer', } }} onClick={(event) => {
+      {selectedKeys.length > 0 && <Icon iconName="Clear" styles={{ root: { cursor: 'pointer', } }} onClick={() => {
         setSelectedKeys([]);
       }} />}
     </>
@@ -89,6 +90,11 @@ export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (pr
   ];
 
   const commandBarFarItems: ICommandBarItemProps[] = [
+    {
+      key: 'progress',
+      disabled: true,
+      onRenderIcon: () => <ProgressStatus/>,
+    },
     {
       key: 'settings',
       text: 'Settings',

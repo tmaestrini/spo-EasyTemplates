@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ITreeItem } from "@pnp/spfx-controls-react/lib/TreeView";
 import { TemplateFile } from "../../../hooks/useTemplateFiles";
+import { IFile } from "@pnp/sp/files";
 
 type TemplatesManagementContextState = {
   templateFiles?: TemplateFile[];
@@ -13,6 +14,9 @@ type TemplatesManagementContextState = {
 
   selectedFiles: any[];
   checkoutFiles: (files: ITreeItem[]) => void;
+
+  copiedFiles?: { files?: IFile[], success?: boolean, message?: string };
+  setCopiedFiles?: (files: IFile[], message: string) => void;
 }
 
 export const TemplatesManagementContext = React.createContext<TemplatesManagementContextState>({

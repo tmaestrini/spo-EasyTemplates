@@ -3,6 +3,7 @@ import { TemplatesManagementContext } from "./TemplatesManagementContext";
 import { TemplateFile, useTemplateFiles } from "../../../hooks/useTemplateFiles";
 import { SPFxContext } from "./SPFxContext";
 import { SPFx, spfi } from '@pnp/sp';
+import { IFile } from "@pnp/sp/files";
 
 type TemplatesManagementContextProviderProps = {}
 
@@ -12,6 +13,7 @@ export const TemplatesManagementContextProvider: React.FC<TemplatesManagementCon
   const [selectedTemplateFiles, setSelectedTemplateFiles] = React.useState<TemplateFile[]>([]);
   const [filterTemplateValue, setTemplateValueFilter] = React.useState('');
   const [filterTemplateCategories, setTemplateCategoriesFilter] = React.useState([]);
+  const [copiedFiles, setCopied] = React.useState<{ files: IFile[], success: boolean, message: string }>(undefined);
 
   const addTemplateFilesToSelection = (files: any[]): void => {
     setSelectedTemplateFiles([]);
@@ -26,6 +28,12 @@ export const TemplatesManagementContextProvider: React.FC<TemplatesManagementCon
   const filterTemplateByCatgegories = (categories: string[]): void => {
     setTemplateCategoriesFilter(undefined);
     setTemplateCategoriesFilter(categories);
+  }
+
+  const setCopiedFiles = (newFiles: IFile[], message: string): void => {
+    setCopied(undefined);
+    setCopied({ files: newFiles, success: (newFiles?.length > 0 ? true : false), message });
+    setSelectedTemplateFiles([]);
   }
 
   async function initSourceList(): Promise<void> {
@@ -50,6 +58,7 @@ export const TemplatesManagementContextProvider: React.FC<TemplatesManagementCon
     selectedFiles: selectedTemplateFiles, checkoutFiles: addTemplateFilesToSelection,
     templateFilter: { value: filterTemplateValue, categories: filterTemplateCategories }, setTemplateValueFilter: filterTemplateByValue,
     setTemplateCategoriesFilter: filterTemplateByCatgegories,
+    copiedFiles, setCopiedFiles
   }}>
     {props.children}
   </TemplatesManagementContext.Provider>
