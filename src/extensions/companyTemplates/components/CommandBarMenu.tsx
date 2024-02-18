@@ -1,8 +1,9 @@
-import { CommandBar, Dropdown, ICommandBarItemProps, IDropdownOption, IDropdownProps, Icon, PrimaryButton, SearchBox } from "@fluentui/react";
+import { CommandBar, Dropdown, ICommandBarItemProps, IDropdownOption, IDropdownProps, Icon, SearchBox } from "@fluentui/react";
 import * as React from "react";
 import { SettingsView } from "./views";
 import { TemplatesManagementContext } from "../contexts/TemplatesManagementContext";
 import { TemplateFile } from "../../../hooks/useTemplateFiles";
+import { CopyTemplatesButton } from "./CopyTemplatesButton";
 
 type ICommandBarMenuProps = {
   pageNavigationHandler: (page: React.ReactNode) => void;
@@ -41,7 +42,7 @@ function CategoryFilter(props: { templateFilesByCategory: { [key: string]: Templ
   }
 
   return <Dropdown
-    placeholder="Kategorien filtern"
+    placeholder="nach Kategorien"
     selectedKeys={selectedKeys}
     onChange={onChange}
     styles={{ root: { width: 200, border: 'none', textAlign: 'left' } }}
@@ -68,7 +69,7 @@ export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (pr
   const commandBarItems: ICommandBarItemProps[] = [
     {
       key: 'filterLabel',
-      onRenderIcon: () => <span>Filter:</span>,
+      onRenderIcon: () => <span>Templates filtern:</span>,
     },
     {
       key: 'filterTemplateCategories',
@@ -83,7 +84,7 @@ export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (pr
     {
       key: 'copy',
       ariaLabel: 'Copy',
-      onRenderIcon: () => <PrimaryButton disabled={selectedFiles.length === 0} text={`${selectedFiles.length > 0 ? `${selectedFiles.length} ` : ''}Templates kopieren`} onClick={() => console.log('kopieren')} allowDisabledFocus />,
+      onRenderIcon: () => <CopyTemplatesButton selectedFiles={selectedFiles} />,
     },
   ];
 
