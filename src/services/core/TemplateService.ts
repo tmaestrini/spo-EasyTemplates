@@ -105,7 +105,7 @@ export class TemplateService implements ITemplateService {
       }));
       return files;
     } catch (error) {
-      throw `Error while copying templates: ${error.message}` || error;
+      throw `Error while copying templates; please check the library for the status of the copied files.  ${error.message}` || error;
     }
   }
 

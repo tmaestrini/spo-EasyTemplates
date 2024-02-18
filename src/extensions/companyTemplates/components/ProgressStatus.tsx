@@ -8,7 +8,7 @@ type ProgressStatusProps = {
 
 export const ProgressStatus: React.FunctionComponent<ProgressStatusProps> = (props: React.PropsWithChildren<ProgressStatusProps>) => {
   const { copiedFiles, setCopiedFiles } = React.useContext(TemplatesManagementContext);
-  const fillColor = getThemeColor("themeDarkAlt").replace('#', '%23');
+  const fillColor = getThemeColor("themeDarkAlt");
 
   function resetCopyProcess(): void {
     setCopiedFiles(undefined, '');

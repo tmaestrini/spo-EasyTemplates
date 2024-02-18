@@ -2,7 +2,6 @@ import { CommandBar, Dropdown, ICommandBarItemProps, IDropdownOption, IDropdownP
 import * as React from "react";
 import { SettingsView } from "./views";
 import { TemplatesManagementContext } from "../contexts/TemplatesManagementContext";
-import { TemplateFile } from "../../../hooks/useTemplateFiles";
 import { CopyTemplatesButton } from "./CopyTemplatesButton";
 import { ProgressStatus } from "./ProgressStatus";
 
@@ -10,10 +9,9 @@ type ICommandBarMenuProps = {
   pageNavigationHandler: (page: React.ReactNode) => void;
 }
 
-function CategoryFilter(props: { templateFilesByCategory: { [key: string]: TemplateFile[] }[] }): JSX.Element {
-  const { setTemplateCategoriesFilter } = React.useContext(TemplatesManagementContext);
+function CategoryFilter(): JSX.Element {
+  const { templateFilesByCategory, setTemplateCategoriesFilter } = React.useContext(TemplatesManagementContext);
   const [selectedKeys, setSelectedKeys] = React.useState<string[]>([]);
-  const { templateFilesByCategory } = props;
 
   React.useEffect(() => {
     setTemplateCategoriesFilter(selectedKeys);
@@ -59,7 +57,7 @@ function CategoryFilter(props: { templateFilesByCategory: { [key: string]: Templ
 }
 
 export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (props: React.PropsWithChildren<ICommandBarMenuProps>) => {
-  const { templateFilesByCategory, selectedFiles, checkoutFiles, setTemplateValueFilter } = React.useContext(TemplatesManagementContext);
+  const { selectedFiles, checkoutFiles, setTemplateValueFilter, copiedFiles } = React.useContext(TemplatesManagementContext);
   const { pageNavigationHandler } = props;
 
   function clearCommandBarValues(): void {
@@ -75,7 +73,7 @@ export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (pr
     {
       key: 'filterTemplateCategories',
       ariaLabel: 'Filter by categories',
-      onRenderIcon: () => <CategoryFilter templateFilesByCategory={templateFilesByCategory} />,
+      onRenderIcon: () => <CategoryFilter />,
     },
     {
       key: 'search',
@@ -92,7 +90,7 @@ export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (pr
   const commandBarFarItems: ICommandBarItemProps[] = [
     {
       key: 'progress',
-      disabled: true,
+      disabled: copiedFiles?.files?.length > 0 ? false : true,
       onRenderIcon: () => <ProgressStatus/>,
     },
     {
