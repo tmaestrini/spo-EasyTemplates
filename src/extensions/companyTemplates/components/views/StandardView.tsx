@@ -100,7 +100,7 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
     <div>
       <h2 className={`od-ItemContent-title ${styles.dialogTitle}`} key={'title'}>Template View (Standard)</h2>
       {loading && <div><Spinner size={SpinnerSize.large} label='Loading Templates...' labelPosition='top' /></div>}
-      {!loading && templateFiles.length > 0 ?
+      {(!loading && templateFiles.length > 0) &&
         <TreeView
           items={makeFolderStructure(filteredtemplateFiles)}
           defaultExpandedChildren={false}
@@ -109,7 +109,8 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
           selectionMode={TreeViewSelectionMode.Multiple}
           onSelect={(items) => checkoutFiles([...items])}
           onRenderItem={(i) => onRenderItem(i)}
-        /> : 
+        />}
+      {!loading && templateFiles.length === 0 && 
         <div>No templates found. Please specify configuration first.</div>}
     </div>
   );
