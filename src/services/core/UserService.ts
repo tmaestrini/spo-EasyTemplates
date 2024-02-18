@@ -1,14 +1,17 @@
 import { ServiceKey, ServiceScope } from "@microsoft/sp-core-library";
 import { AadTokenProviderFactory } from "@microsoft/sp-http";
+import { MSGraphClientFactory } from "@microsoft/sp-http-msgraph";
 
 export interface IUserService {
   getUserToken(resourceEndpoint?: string): Promise<string>;
   getUserTokenDecoded(resourceEndpoint?: string): Promise<string>;
+  getUserData(): Promise<any>;
 }
 
 export class UserService implements IUserService {
 
   private aadTokenProviderFactory: AadTokenProviderFactory;
+  private msGraphClientFactory: MSGraphClientFactory;
 
   public static readonly serviceKey: ServiceKey<IUserService> =
     ServiceKey.create<IUserService>('CompanyTemplates.UserService', UserService);
@@ -16,6 +19,7 @@ export class UserService implements IUserService {
   constructor(serviceScope: ServiceScope) {
     serviceScope.whenFinished(() => {
       this.aadTokenProviderFactory = serviceScope.consume(AadTokenProviderFactory.serviceKey);
+      this.msGraphClientFactory = serviceScope.consume(MSGraphClientFactory.serviceKey);
     })
   }
 
@@ -35,6 +39,13 @@ export class UserService implements IUserService {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace('-', '+').replace('_', '/');
     return JSON.parse(window.atob(base64));
+  }
+
+  public async getUserData(): Promise<any> {
+    return this.msGraphClientFactory.getClient("3").then(async client => {
+      const data = await client.api('/me').get();
+      return data;
+    });
   }
 
 }
