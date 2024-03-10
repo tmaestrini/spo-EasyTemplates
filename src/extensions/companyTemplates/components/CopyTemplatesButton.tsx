@@ -17,10 +17,10 @@ export const CopyTemplatesButton: React.FunctionComponent<CopyTemplatesButtonPro
   const service = context.serviceScope.consume(TemplateService.serviceKey);
 
   async function copyTemplates(): Promise<void> {
-    const urlParams = new URLSearchParams(window.location.search);
-    const currentPath = urlParams.get('id') ?? '';
+    const queryParameters = new URLSearchParams(window.location.search);
+    const currentFolderPath = queryParameters.get('id') || queryParameters.get('Id') || queryParameters.get('RootFolder') || '';
     const library = context.pageContext.list.serverRelativeUrl;
-    const targetFolderUrl = `${library}${currentPath.replace(library, '')}`;
+    const targetFolderUrl = `${library}${currentFolderPath.replace(library, '')}`;
     try {
       const newFiles = await service.copyTemplates(context.pageContext.site.absoluteUrl, targetFolderUrl, selectedFiles);
       setCopiedFiles(newFiles, `${newFiles.length} template${newFiles.length > 1 ? 's' : ''} copied successfully!`);
