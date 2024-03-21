@@ -4,6 +4,8 @@ import { SettingsView } from "./views";
 import { TemplatesManagementContext } from "../contexts/TemplatesManagementContext";
 import { CopyTemplatesButton } from "./CopyTemplatesButton";
 import { ProgressStatus } from "./ProgressStatus";
+import { SPFxContext } from "../contexts/SPFxContext";
+import { SPPermission } from "@microsoft/sp-page-context";
 
 type ICommandBarMenuProps = {
   pageNavigationHandler: (page: React.ReactNode) => void;
@@ -58,6 +60,7 @@ function CategoryFilter(): JSX.Element {
 
 export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (props: React.PropsWithChildren<ICommandBarMenuProps>) => {
   const { selectedFiles, checkoutFiles, setTemplateValueFilter, copiedFiles } = React.useContext(TemplatesManagementContext);
+  const { context } = React.useContext(SPFxContext);
   const { pageNavigationHandler } = props;
 
   function clearCommandBarValues(): void {
@@ -91,8 +94,9 @@ export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (pr
     {
       key: 'progress',
       disabled: copiedFiles?.files?.length > 0 ? false : true,
-      onRenderIcon: () => <ProgressStatus/>,
+      onRenderIcon: () => <ProgressStatus />,
     },
+    context.pageContext.web.permissions.hasPermission(SPPermission.manageLists) &&
     {
       key: 'settings',
       text: 'Settings',
