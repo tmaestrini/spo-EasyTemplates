@@ -11,7 +11,7 @@ Under the hood, the extension is built using React and PnPjs.
 - [x] Filter by file category
 - [x] Filter by name
 - [x] Copy selected files fom template repository to the current document library
-- [x] Show an settings page to all users who have permissions to manage lists
+- [x] Show a settings page to all users who have permissions to manage lists
 
 Uses several ["Reusable React controls"](https://pnp.github.io/sp-dev-fx-controls-react/) for an awesome user experience.
 
