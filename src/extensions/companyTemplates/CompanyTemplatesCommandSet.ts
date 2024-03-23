@@ -9,13 +9,10 @@ import { getThemeColor } from './themeHelper';
 import DialogWrapper from './components/DialogWrapper';
 import * as React from 'react';
 import { CompanyTemplates } from './components/CompanyTemplates';
-import { SPFxContext } from './contexts/SPFxContext';
-import * as strings from 'CompanyTemplatesCommandSetStrings';
 
 export interface ICompanyTemplatesCommandSetProperties { }
 
 const LOG_SOURCE: string = 'CompanyTemplatesCommandSet';
-console.log(strings);
 export default class CompanyTemplatesCommandSet extends BaseListViewCommandSet<ICompanyTemplatesCommandSetProperties> {
 
   public onInit(): Promise<void> {
@@ -37,10 +34,9 @@ export default class CompanyTemplatesCommandSet extends BaseListViewCommandSet<I
   public onExecute(event: IListViewCommandSetExecuteEventParameters): void {
     switch (event.itemId) {
       case 'COMPANY_TEMPLATES': {
-        const templatesComponent = React.createElement(CompanyTemplates);
-        const contextProvider = React.createElement(SPFxContext.Provider, { value: { context: this.context } }, templatesComponent);
-        const wrapper = new DialogWrapper(contextProvider);
-        wrapper.show().catch(er => alert(er));
+        const templatesComponent = React.createElement(CompanyTemplates, { context: this.context });
+        const wrapper = new DialogWrapper(templatesComponent);
+        wrapper.show().catch(error => alert(error));
         break;
       }
       default:
