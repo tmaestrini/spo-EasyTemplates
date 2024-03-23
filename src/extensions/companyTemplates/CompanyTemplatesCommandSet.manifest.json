@@ -14,8 +14,7 @@
   "items": {
     "COMPANY_TEMPLATES": {
       "title": { "default": "Company templates", "de-de": "Vorlagen abrufen" },
-      "type": "command",
-      "iconImageUrl": "./icons/request.png"
+      "type": "command"
     }
   }
 }
