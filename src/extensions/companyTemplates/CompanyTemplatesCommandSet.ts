@@ -13,6 +13,7 @@ import { CompanyTemplates } from './components/CompanyTemplates';
 export interface ICompanyTemplatesCommandSetProperties { }
 
 const LOG_SOURCE: string = 'CompanyTemplatesCommandSet';
+
 export default class CompanyTemplatesCommandSet extends BaseListViewCommandSet<ICompanyTemplatesCommandSetProperties> {
 
   public onInit(): Promise<void> {
