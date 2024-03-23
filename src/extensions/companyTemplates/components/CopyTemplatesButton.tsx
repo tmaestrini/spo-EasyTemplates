@@ -12,11 +12,12 @@ type CopyTemplatesButtonProps = {
 export const CopyTemplatesButton: React.FunctionComponent<CopyTemplatesButtonProps> = (props: React.PropsWithChildren<CopyTemplatesButtonProps>) => {
   const { selectedFiles } = props;
   const { context } = React.useContext(SPFxContext);
-  const { setCopiedFiles } = React.useContext(TemplatesManagementContext);
+  const { setCopiedFiles, startCopyProcess } = React.useContext(TemplatesManagementContext);
   const buttonId = useId('template-copy-button');
   const service = context.serviceScope.consume(TemplateService.serviceKey);
 
   async function copyTemplates(): Promise<void> {
+    startCopyProcess();
     const queryParameters = new URLSearchParams(window.location.search);
     const currentFolderPath = queryParameters.get('id') || queryParameters.get('Id') || queryParameters.get('RootFolder') || '';
     const library = context.pageContext.list.serverRelativeUrl;

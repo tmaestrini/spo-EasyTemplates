@@ -17,6 +17,8 @@ type TemplatesManagementContextState = {
 
   copiedFiles?: { files?: IFile[], success?: boolean, message?: string };
   setCopiedFiles?: (files: IFile[], message: string) => void;
+  startCopyProcess?: () => void;
+  isCopyingFiles?: boolean;
 }
 
 export const TemplatesManagementContext = React.createContext<TemplatesManagementContextState>({

@@ -14,6 +14,7 @@ export const TemplatesManagementContextProvider: React.FC<TemplatesManagementCon
   const [filterTemplateValue, setTemplateValueFilter] = React.useState('');
   const [filterTemplateCategories, setTemplateCategoriesFilter] = React.useState([]);
   const [copiedFiles, setCopied] = React.useState<{ files: IFile[], success: boolean, message: string }>(undefined);
+  const [isCopyingFiles, setIsCopyingFiles] = React.useState<boolean>(false);
 
   const addTemplateFilesToSelection = (files: any[]): void => {
     setSelectedTemplateFiles([]);
@@ -30,10 +31,15 @@ export const TemplatesManagementContextProvider: React.FC<TemplatesManagementCon
     setTemplateCategoriesFilter(categories);
   }
 
+  const startCopyProcess = (): void => {
+    setIsCopyingFiles(true);
+  }
+
   const setCopiedFiles = (newFiles: IFile[], message: string): void => {
     setCopied(undefined);
     setCopied({ files: newFiles, success: (newFiles?.length > 0 ? true : false), message });
     setSelectedTemplateFiles([]);
+    setIsCopyingFiles(false);
   }
 
   async function initSourceList(): Promise<void> {
@@ -58,7 +64,7 @@ export const TemplatesManagementContextProvider: React.FC<TemplatesManagementCon
     selectedFiles: selectedTemplateFiles, checkoutFiles: addTemplateFilesToSelection,
     templateFilter: { value: filterTemplateValue, categories: filterTemplateCategories }, setTemplateValueFilter: filterTemplateByValue,
     setTemplateCategoriesFilter: filterTemplateByCatgegories,
-    copiedFiles, setCopiedFiles
+    copiedFiles, setCopiedFiles, startCopyProcess, isCopyingFiles
   }}>
     {props.children}
   </TemplatesManagementContext.Provider>

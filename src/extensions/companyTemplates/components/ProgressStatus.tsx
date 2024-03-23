@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DefaultButton, FocusTrapCallout, FocusZone, Icon, PrimaryButton, Stack, Text } from "@fluentui/react";
+import { DefaultButton, FocusTrapCallout, FocusZone, Icon, PrimaryButton, Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
 import { TemplatesManagementContext } from "../contexts/TemplatesManagementContext";
 import { getThemeColor } from "../themeHelper";
 
@@ -7,7 +7,7 @@ type ProgressStatusProps = {
 }
 
 export const ProgressStatus: React.FunctionComponent<ProgressStatusProps> = (props: React.PropsWithChildren<ProgressStatusProps>) => {
-  const { copiedFiles, setCopiedFiles } = React.useContext(TemplatesManagementContext);
+  const { copiedFiles, setCopiedFiles, isCopyingFiles } = React.useContext(TemplatesManagementContext);
   const fillColor = getThemeColor("themeDarkAlt");
 
   function resetCopyProcess(): void {
@@ -15,6 +15,9 @@ export const ProgressStatus: React.FunctionComponent<ProgressStatusProps> = (pro
   }
 
   return <>
+    {isCopyingFiles &&
+      <Spinner size={SpinnerSize.small} label="Copying" labelPosition="left"/>
+    }
     {(copiedFiles && copiedFiles.files) &&
       <>
         {copiedFiles.success && <Icon id="progress-status" iconName="CheckMark" styles={{ root: { color: fillColor } }} />}
@@ -32,6 +35,7 @@ export const ProgressStatus: React.FunctionComponent<ProgressStatusProps> = (pro
           target={`#progress-status`}
           onDismiss={resetCopyProcess}
           setInitialFocus
+          beakWidth={0} // add this as a workaround because of isBeakVisible is not working properly
         >
           <Text block variant="large" styles={{ root: { marginBottom: '1rem' } }}>Copy templates</Text>
           <Text block styles={{ root: { marginBottom: '0.5rem' } }}>{copiedFiles.success ? <Icon iconName="Completed" /> : <Icon iconName="ErrorBadge" />} {copiedFiles.message}</Text>
