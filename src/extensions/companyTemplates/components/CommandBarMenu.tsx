@@ -33,7 +33,7 @@ export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (pr
     {
       key: 'progress',
       disabled: copiedFiles?.files?.length > 0 ? false : true,
-      commandBarButtonAs: () => <ProgressStatus />,
+      onRenderIcon: () => <ProgressStatus />,
     },
     context.pageContext.web.permissions.hasPermission(SPPermission.manageLists) &&
     {
