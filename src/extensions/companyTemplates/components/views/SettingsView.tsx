@@ -6,11 +6,11 @@ import { StandardView } from './StandardView';
 import styles from '../CompanyTemplates.module.scss'
 import { ISite, SitePicker } from "@pnp/spfx-controls-react/lib/SitePicker";
 import { ListPicker } from "@pnp/spfx-controls-react/lib/ListPicker";
-import { SPFx, spfi } from "@pnp/sp";
 import "@pnp/sp/appcatalog";
 import "@pnp/sp/webs";
 import { UserService } from '../../../../services/core/UserService';
 import { SettingsTemplateDefinition } from '../SettingsTemplateDefinition';
+import useTemplatesSettings from '../../../../hooks/useTemplatesSettings';
 
 export interface ISettingsViewProps {
   onNavigationExit: (destination: React.ReactNode) => void;
@@ -20,25 +20,8 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
   const context = useContext(SPFxContext).context;
   const [userToken, setUserToken] = React.useState<any>(undefined);
   const [userData, setUserData] = React.useState<any>(undefined);
-  const [settings, setSettings] = React.useState<{ site?: string, list?: string, categoryField?: { Id: string; InternalName: string; } }>({ site: undefined, list: undefined, categoryField: undefined });
+  const { settings, setSettings, storeListSettings } = useTemplatesSettings(context);
   const [processState, setProcess] = React.useState({ saveInProgress: false, error: null });
-
-  React.useEffect(() => {
-    async function fetchListSettings(): Promise<void> {
-      const sp = spfi().using(SPFx(context));
-      try {
-        const settingsData = (await sp.web.getStorageEntity("easyTemplatesSettings"))?.Value;
-        if (settingsData) {
-          const settings = JSON.parse(settingsData);
-          setSettings({ site: settings.site, list: settings.list, categoryField: settings.categoryField });
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-    fetchListSettings().catch(error => console.log(error));
-  }, []);
 
   React.useEffect(() => {
     const userService = context.serviceScope.consume(UserService.serviceKey);
@@ -50,16 +33,6 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
       .then((data) => { setUserData(data) })
       .catch((error) => console.log(error));
   }, []);
-
-  async function storeListSettings(): Promise<void> {
-    const sp = spfi().using(SPFx(context));
-    const w = await sp.getTenantAppCatalogWeb();
-
-    // specify required key and value
-    await w.setStorageEntity("easyTemplatesSettings", JSON.stringify({ categoryField: settings.categoryField, site: settings.site, list: settings.list }));
-    console.log('Settings saved:');
-    console.log(settings)
-  }
 
   function trySaving(): void {
     setProcess({ ...processState, saveInProgress: true });
@@ -76,7 +49,6 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
   return (
     <>
       <h2 className={`od-ItemContent-title ${styles.dialogTitle}`} key={'title'}>Settings</h2>
-      {/* {userToken && <span>TenantId: {userToken.tid}</span>} */}
       {userData && <span><br />Current User: {userData.displayName}</span>}
 
       <Stack horizontal tokens={{ childrenGap: 10 }} style={{ verticalAlign: 'top', justifyContent: 'space-between' }}>
