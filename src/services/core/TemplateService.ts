@@ -8,6 +8,7 @@ export type TemplateFile = {
   id: string;
   title: string;
   type: 'Folder' | 'File';
+  siteUrl: string;
   fileType: string;
   fileRef: string;
   fileLeafRef: string;
@@ -25,7 +26,7 @@ export type TemplateParams = {
 
 export interface ITemplateService {
   getTemplates(templateStoreParams: TemplateParams): Promise<TemplateFile[]>;
-  copyTemplates(targetSiteUrl: string, targetFolderRelativeUrl: string, selectedFiles: any[]): Promise<IFile[]>;
+  copyTemplates(targetFolderRelativeUrl: string, selectedFiles: any[]): Promise<IFile[]>;
 }
 
 export class TemplateService implements ITemplateService {
@@ -41,7 +42,7 @@ export class TemplateService implements ITemplateService {
     })
   }
 
-  private async getSourceWeb(webUrl: string): Promise<IWeb> {
+  private async getWeb(webUrl: string): Promise<IWeb> {
     const sp = spfi().using(SPFx({ pageContext: this.pageContext }));
     const { WebFullUrl } = await sp.web.getContextInfo(webUrl);
     const sourceWeb = Web([sp.web, decodeURI(WebFullUrl)]);
@@ -51,9 +52,9 @@ export class TemplateService implements ITemplateService {
   public async getTemplates(templateStoreParams: TemplateParams): Promise<TemplateFile[]> {
     const { webUrl, listId, categoryField } = templateStoreParams;
 
-    const sourceWeb = await this.getSourceWeb(webUrl);
+    const sourceWeb = await this.getWeb(webUrl);
+    const { ServerRelativeUrl: sourceSiteUrl } = await sourceWeb();
     const sourceList = sourceWeb.lists.getById(listId);
-
     const { ParentWebUrl } = await sourceList();
     const selectFields = ['Title', 'FileRef', 'FSObjType',
       'BaseName', 'ServerUrl', 'DocIcon',
@@ -71,6 +72,7 @@ export class TemplateService implements ITemplateService {
           id: f.UniqueId,
           title: !isEmpty(f.Title) ? f.Title : f.FileLeafRef,
           type: f.FSObjType === 1 ? 'Folder' : 'File',
+          siteUrl: sourceSiteUrl,
           fileType: f.File_x0020_Type,
           fileRef: f.FileRef,
           fileLeafRef: f.FileLeafRef,
@@ -92,10 +94,10 @@ export class TemplateService implements ITemplateService {
     return fileItems;
   }
 
-  public async copyTemplates(targetSiteUrl: string, targetFolderRelativeUrl: string, selectedFiles: any[]): Promise<IFile[]> {
+  public async copyTemplates(targetFolderRelativeUrl: string, selectedFiles: any[]): Promise<IFile[]> {
     try {
-      const sourceWeb = await this.getSourceWeb(targetSiteUrl);
       const files = await Promise.all(selectedFiles.map(async (file) => {
+        const sourceWeb = await this.getWeb(file.data.siteUrl);
         return await sourceWeb.getFileById(file.data.id)
           .copyByPath(`${targetFolderRelativeUrl}/${file.data.fileLeafRef}`, false, {
             KeepBoth: false,

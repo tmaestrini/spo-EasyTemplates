@@ -22,7 +22,7 @@ export const CopyTemplatesButton: React.FunctionComponent<CopyTemplatesButtonPro
     const library = context.pageContext.list.serverRelativeUrl;
     const targetFolderUrl = `${library}${currentFolderPath.replace(library, '')}`;
     try {
-      const newFiles = await service.copyTemplates(context.pageContext.site.absoluteUrl, targetFolderUrl, selectedFiles);
+      const newFiles = await service.copyTemplates(targetFolderUrl, selectedFiles);
       setCopiedFiles(newFiles, `${newFiles.length} template${newFiles.length > 1 ? 's' : ''} copied successfully!`);
     } catch (error) {
       setCopiedFiles([], error);

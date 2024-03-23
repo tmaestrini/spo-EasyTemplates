@@ -51,17 +51,23 @@
       "pluginPath": "~appFolder/plugins/dev-proxy-plugins.dll",
       "configSection": "cachingGuidance"
     },
-    {
-      "name": "GraphRandomErrorPlugin",
-      "enabled": true,
-      "pluginPath": "~appFolder/plugins/dev-proxy-plugins.dll",
-      "configSection": "graphRandomErrorsPlugin"
-    },
+    // {
+    //   "name": "GraphRandomErrorPlugin",
+    //   "enabled": true,
+    //   "pluginPath": "~appFolder/plugins/dev-proxy-plugins.dll",
+    //   "configSection": "graphRandomErrorsPlugin"
+    // },
     {
       "name": "MinimalPermissionsPlugin",
       "enabled": true,
       "pluginPath": "~appFolder/plugins/dev-proxy-plugins.dll",
       "configSection": "minimalPermissionsPlugin"
+    },
+    {
+      "name": "CrudApiPlugin",
+      "enabled": true,
+      "pluginPath": "~appFolder/plugins/dev-proxy-plugins.dll",
+      "configSection": "testApi"
     }
   ],
   "testApi": {
