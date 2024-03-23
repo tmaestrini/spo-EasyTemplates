@@ -12,8 +12,8 @@
   "requiresCustomScript": false,
 
   "items": {
-    "COMMAND_1": {
-      "title": { "default": "Company templates" , "de-de": "Vorlagen abrufen" },
+    "COMPANY_TEMPLATES": {
+      "title": { "default": "Company templates" },
       "type": "command",
       "iconImageUrl": "./icons/request.png"
     }

@@ -1,12 +1,14 @@
 import { ServiceKey, ServiceScope } from "@microsoft/sp-core-library";
 import { PageContext } from '@microsoft/sp-page-context';
 import { isEmpty } from '@microsoft/sp-lodash-subset';
-import { SPFx, Web, spfi } from '@pnp/sp/presets/all';
+import { IFile, IWeb, SPFx, Web, spfi } from '@pnp/sp/presets/all';
+import "@pnp/sp/navigation";
 
 export type TemplateFile = {
   id: string;
   title: string;
   type: 'Folder' | 'File';
+  siteUrl: string;
   fileType: string;
   fileRef: string;
   fileLeafRef: string;
@@ -24,6 +26,7 @@ export type TemplateParams = {
 
 export interface ITemplateService {
   getTemplates(templateStoreParams: TemplateParams): Promise<TemplateFile[]>;
+  copyTemplates(targetFolderRelativeUrl: string, selectedFiles: any[]): Promise<IFile[]>;
 }
 
 export class TemplateService implements ITemplateService {
@@ -39,21 +42,28 @@ export class TemplateService implements ITemplateService {
     })
   }
 
-  public async getTemplates(templateStoreParams: TemplateParams): Promise<TemplateFile[]> {
-    const { webUrl, listId, categoryField } = templateStoreParams;
-
+  private async getWeb(webUrl: string): Promise<IWeb> {
     const sp = spfi().using(SPFx({ pageContext: this.pageContext }));
     const { WebFullUrl } = await sp.web.getContextInfo(webUrl);
     const sourceWeb = Web([sp.web, decodeURI(WebFullUrl)]);
-    const sourceList = sourceWeb.lists.getById(listId);
+    return sourceWeb;
+  }
 
+  public async getTemplates(templateStoreParams: TemplateParams): Promise<TemplateFile[]> {
+    const { webUrl, listId, categoryField } = templateStoreParams;
+
+    const sourceWeb = await this.getWeb(webUrl);
+    const { ServerRelativeUrl: sourceSiteUrl } = await sourceWeb();
+    const sourceList = sourceWeb.lists.getById(listId);
     const { ParentWebUrl } = await sourceList();
+    const selectFields = ['Title', 'FileRef', 'FSObjType',
+      'BaseName', 'ServerUrl', 'DocIcon',
+      'LinkFilename', 'UniqueId', 'FileDirRef',
+      'File_x0020_Type', 'FileLeafRef', 'Modified', /*"FieldValuesAsText"*/];
+    categoryField?.InternalName && selectFields.push(categoryField?.InternalName);
+
     const fileItems = (await sourceList.items
-      .select('Title', 'FileRef', 'FSObjType',
-        'BaseName', 'ServerUrl', 'DocIcon',
-        'LinkFilename', 'UniqueId', 'FileDirRef',
-        categoryField?.InternalName ? `${categoryField.InternalName}` : '',
-        'File_x0020_Type', 'FileLeafRef', 'Modified', /*"FieldValuesAsText"*/)
+      .select(...selectFields)
       .filter("FSObjType eq 0")
       // .expand("FieldValuesAsText")
       .getAll())
@@ -62,6 +72,7 @@ export class TemplateService implements ITemplateService {
           id: f.UniqueId,
           title: !isEmpty(f.Title) ? f.Title : f.FileLeafRef,
           type: f.FSObjType === 1 ? 'Folder' : 'File',
+          siteUrl: sourceSiteUrl,
           fileType: f.File_x0020_Type,
           fileRef: f.FileRef,
           fileLeafRef: f.FileLeafRef,
@@ -81,6 +92,23 @@ export class TemplateService implements ITemplateService {
         return data;
       });
     return fileItems;
+  }
+
+  public async copyTemplates(targetFolderRelativeUrl: string, selectedFiles: any[]): Promise<IFile[]> {
+    try {
+      const files = await Promise.all(selectedFiles.map(async (file) => {
+        const sourceWeb = await this.getWeb(file.data.siteUrl);
+        return await sourceWeb.getFileById(file.data.id)
+          .copyByPath(`${targetFolderRelativeUrl}/${file.data.fileLeafRef}`, false, {
+            KeepBoth: false,
+            ResetAuthorAndCreatedOnCopy: true,
+            ShouldBypassSharedLocks: false,
+          });
+      }));
+      return files;
+    } catch (error) {
+      throw `Error while copying templates; please check the library for the status of the copied files.  ${error.message}` || error;
+    }
   }
 
 }

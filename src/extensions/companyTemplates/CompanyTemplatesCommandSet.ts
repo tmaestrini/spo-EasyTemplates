@@ -22,11 +22,11 @@ export default class CompanyTemplatesCommandSet extends BaseListViewCommandSet<I
     Log.info(LOG_SOURCE, 'Initialized CompanyTemplatesCommandSet');
 
     // initial state of the command's visibility
-    const compareOneCommand: Command = this.tryGetCommand('COMMAND_1');
+    const compareOneCommand: Command = this.tryGetCommand('COMPANY_TEMPLATES');
     compareOneCommand.visible = true;
 
     const fillColor = getThemeColor("themeDarkAlt").replace('#', '%23');
-    const exportSvg = `data:image/svg+xml,%3Csvg xmlns%3D'http%3A//www.w3.org/2000/svg' viewBox='0 0 2048 2048'%3E%3Cpath d='M896 512h128v512H896V512zM512 768H0V256h128v274q67-123 163-221t212-166T752 37t272-37q141 0 272 36t245 103 207 160 160 208 103 245 37 272h-128q0-123-32-237t-90-214-141-182-181-140-214-91-238-32q-129 0-251 36T546 267 355 428 215 640h297v128zm512 384h1024v128H1024v-128zm0 384h1024v128H1024v-128zm0 384h1024v128H1024v-128zm-863-657q36 129 105 239t166 194 214 140 250 74v130q-154-21-292-83t-250-158-193-224-123-278l123-34z' fill='${fillColor}'%3E%3C/path%3E%3C/svg%3E`;
+    const exportSvg = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2048 2048'%3E%3Cpath d='M608 128q45 0 77 9t58 24 46 31 40 31 44 23 55 10h992q27 0 50 10t40 27 28 41 10 50v451l-128-128V384H928q-31 0-54 9t-44 24-41 31-45 31-58 23-78 10H128v1152h640v128H0V256q0-27 10-50t27-40 41-28 50-10h480zm0 256q24 0 42-4t33-13 29-20 32-27q-17-15-31-26t-30-20-33-13-42-5H128v128h480zm1019 256l421 421v987H896V640h731zm37 384h165l-165-165v165zm256 128h-384V768h-512v1152h896v-768zm-768 512h512v128h-512v-128zm256-128h-256v-128h256v128zm0-256h-256v-128h256v128zm0-256h-256V896h256v128z' fill='${fillColor}'%3E%3C/path%3E%3C/svg%3E`;
     compareOneCommand.iconImageUrl = exportSvg;
 
     this.context.listView.listViewStateChangedEvent.add(this, this._onListViewStateChanged);
@@ -36,7 +36,7 @@ export default class CompanyTemplatesCommandSet extends BaseListViewCommandSet<I
 
   public onExecute(event: IListViewCommandSetExecuteEventParameters): void {
     switch (event.itemId) {
-      case 'COMMAND_1': {
+      case 'COMPANY_TEMPLATES': {
         const templatesComponent = React.createElement(CompanyTemplates);
         const contextProvider = React.createElement(SPFxContext.Provider, { value: { context: this.context } }, templatesComponent);
         const wrapper = new DialogWrapper(contextProvider);
@@ -50,13 +50,6 @@ export default class CompanyTemplatesCommandSet extends BaseListViewCommandSet<I
 
   private _onListViewStateChanged = (args: ListViewStateChangedEventArgs): void => {
     Log.info(LOG_SOURCE, 'List view state changed');
-
-    // const compareOneCommand: Command = this.tryGetCommand('COMMAND_1');
-    // if (compareOneCommand) {
-    //   // This command should be hidden unless exactly one row is selected.
-    //   compareOneCommand.visible = this.context.listView.selectedRows?.length === 1;
-    // }
-
     this.raiseOnChange();
   }
 }

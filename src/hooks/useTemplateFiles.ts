@@ -20,12 +20,14 @@ export type TemplateFile = {
 export function useTemplateFiles(initialValues: TemplateParams): {
   templateFiles: TemplateFile[],
   templateFilesByCategory: { [key: string]: TemplateFile[] }[],
+  loading: boolean,
   templateStore: TemplateParams,
   initWithListParams: (newParams: TemplateParams) => void,
 } {
   const [templateStoreParams, setParams] = useState<TemplateParams>({ ...initialValues });
   const [files, setFiles] = useState<TemplateFile[]>([]);
   const [filesGroupedByCategory, setGroupedFiles] = useState<{ [key: string]: TemplateFile[] }[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const { context } = useContext(SPFxContext);
   const templateService = context.serviceScope.consume(TemplateService.serviceKey)
@@ -53,14 +55,15 @@ export function useTemplateFiles(initialValues: TemplateParams): {
   }
 
   useEffect(() => {
-    const { listId, webUrl} = templateStoreParams;
+    const { listId, webUrl } = templateStoreParams;
     if (!listId || !webUrl || !context) return;
 
+    setLoading(true);
     readFilesFromSettings()
       .then(res => { setFiles(res); return res; })
-      .then(res => { groupByCategory(res) })
-      .catch(error => console.log(error));
+      .then(res => { groupByCategory(res); setLoading(false); })
+      .catch(error => { console.log(error); setLoading(false) });
   }, [templateStoreParams]);
 
-  return { templateFiles: files, templateFilesByCategory: filesGroupedByCategory, initWithListParams: setListParams, templateStore: templateStoreParams };
+  return { templateFiles: files, templateFilesByCategory: filesGroupedByCategory, loading: loading, initWithListParams: setListParams, templateStore: templateStoreParams };
 }
