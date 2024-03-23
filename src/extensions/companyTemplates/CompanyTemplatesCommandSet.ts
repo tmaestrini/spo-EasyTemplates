@@ -21,7 +21,7 @@ export default class CompanyTemplatesCommandSet extends BaseListViewCommandSet<I
     Log.info(LOG_SOURCE, 'Initialized CompanyTemplatesCommandSet');
 
     // initial state of the command's visibility
-    const compareOneCommand: Command = this.tryGetCommand('COMMAND_1');
+    const compareOneCommand: Command = this.tryGetCommand('COMPANY_TEMPLATES');
     compareOneCommand.visible = true;
 
     const fillColor = getThemeColor("themeDarkAlt").replace('#', '%23');
@@ -35,7 +35,7 @@ export default class CompanyTemplatesCommandSet extends BaseListViewCommandSet<I
 
   public onExecute(event: IListViewCommandSetExecuteEventParameters): void {
     switch (event.itemId) {
-      case 'COMMAND_1': {
+      case 'COMPANY_TEMPLATES': {
         const templatesComponent = React.createElement(CompanyTemplates);
         const contextProvider = React.createElement(SPFxContext.Provider, { value: { context: this.context } }, templatesComponent);
         const wrapper = new DialogWrapper(contextProvider);
@@ -49,13 +49,6 @@ export default class CompanyTemplatesCommandSet extends BaseListViewCommandSet<I
 
   private _onListViewStateChanged = (args: ListViewStateChangedEventArgs): void => {
     Log.info(LOG_SOURCE, 'List view state changed');
-
-    // const compareOneCommand: Command = this.tryGetCommand('COMMAND_1');
-    // if (compareOneCommand) {
-    //   // This command should be hidden unless exactly one row is selected.
-    //   compareOneCommand.visible = this.context.listView.selectedRows?.length === 1;
-    // }
-
     this.raiseOnChange();
   }
 }
