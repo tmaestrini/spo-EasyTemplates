@@ -32,6 +32,6 @@ export const CopyTemplatesButton: React.FunctionComponent<CopyTemplatesButtonPro
 
   return <>
     <PrimaryButton id={buttonId} disabled={selectedFiles.length === 0} text={`${selectedFiles.length > 0 ? `${selectedFiles.length} ` : ''}Templates kopieren`}
-      onClick={copyTemplates} allowDisabledFocus />
+      onClick={copyTemplates} iconProps={{ iconName: 'Installation' }} allowDisabledFocus />
   </>
 }
