@@ -34,6 +34,7 @@ declare interface ICompanyTemplatesCommandSetStrings {
   SettingsTemplateDefinition: {
     TemplateFieldFieldPickerLabel: string;
     TemplateFieldFieldPickerPlaceholder: string;
+    Description: string;
   }
   // StandardView.tsx
   StandardView: {

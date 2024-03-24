@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useContext } from 'react';
 import { SPFxContext } from '../../contexts/SPFxContext';
-import { DefaultButton, MessageBar, MessageBarType, PrimaryButton, Stack, Text } from '@fluentui/react';
+import { DefaultButton, MessageBar, MessageBarType, PrimaryButton, Stack } from '@fluentui/react';
 import { StandardView } from './StandardView';
 import styles from '../CompanyTemplates.module.scss'
 import { ISite, SitePicker } from "@pnp/spfx-controls-react/lib/SitePicker";
@@ -58,9 +58,7 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
           maxWidth: '49%'
         }}>
           <h3 key={'title-template-repository'} className={styles.dialogSubtitle}>{strings.SettingsView.TemplateRepository}</h3>
-          {/* <Text>Select the SharePoint site and list that contains your templates. It makes perfect sense if you plan to <a href="https://learn.microsoft.com/en-us/sharepoint/organization-assets-library" target='_blank' rel="noreferrer noopener" data-interception="off">use an organization assets library (as <strong>OfficeTemplateLibrary</strong>)</a> to manage your template management.</Text> */}
           <div dangerouslySetInnerHTML={{ __html: strings.SettingsView.TemplateRepositoryDescription }} />
-          <Text dangerouslySetInnerHTML={{ __html: strings.SettingsView.TemplateRepositoryDescription }} />
           {processState.error &&
             <MessageBar
               messageBarType={MessageBarType.error}

@@ -31,7 +31,7 @@ export default function useTemplatesSettings(context: BaseComponentContext): {
   }
   
   async function fetchListSettings(): Promise<void> {
-    const sp = spfi().using(SPFx(context));
+    const  sp = spfi().using(SPFx(context));
     try {
       const settingsData = (await sp.web.getStorageEntity("easyTemplatesSettings"))?.Value;
       if (settingsData) {

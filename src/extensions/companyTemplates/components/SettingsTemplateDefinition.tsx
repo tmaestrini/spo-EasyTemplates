@@ -22,8 +22,9 @@ export const SettingsTemplateDefinition: React.FunctionComponent<SettingsTemplat
 
   return <>
     <Stack tokens={{ childrenGap: 10, }}>
-      List: {props.settings.list} / Site: {props.settings.site}
-      <br />Category Field Id: {props.settings.categoryField?.Id}
+      {/* List: {props.settings.list} / Site: {props.settings.site}
+      <br />Category Field Id: {props.settings.categoryField?.Id} */}
+      <div dangerouslySetInnerHTML={{ __html: strings.SettingsTemplateDefinition.Description }} />
       <FieldPicker
         label={strings.SettingsTemplateDefinition.TemplateFieldFieldPickerLabel}
         context={context as any}

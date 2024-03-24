@@ -35,6 +35,7 @@ define([], function () {
     SettingsTemplateDefinition: {
       TemplateFieldFieldPickerLabel: 'Field that contains the category',
       TemplateFieldFieldPickerPlaceholder: 'Select a category field',
+      Description: 'Specify which field contains the information on the assigned category of the templates. It must be a field of type "Choice", which contains one or more selectable items.',
     },
     // StandardView.tsx
     StandardView: {

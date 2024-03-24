@@ -35,13 +35,14 @@ define([], function () {
     SettingsTemplateDefinition: {
       TemplateFieldFieldPickerLabel: 'Feld, das die Kategorie enthält',
       TemplateFieldFieldPickerPlaceholder: 'Kategorie-Feld auswählen',
+      Description: 'Lege fest, welches Feld die Angaben zur zugeordnenten Kategorie der Vorlagen enthält. Es muss sich um ein Feld des Typs "Auswahl" handeln, welches eines oder mehrere Elemente zur Auswahl bereitstellt.',
     },
     // StandardView.tsx
     StandardView: {
       Title: 'Vorlage(n) aus der Vorlagenbibliothek wählen',
       FilterTemplatesLabel: 'Vorlagen filtern',
       LoadingTemplatesLabel: 'Lade Vorlagen...',
-      SearchBoxPlaceholder: 'Templates durchsuchen und <ENTER> drücken',
+      SearchBoxPlaceholder: 'Vorlagen durchsuchen und <ENTER> drücken',
     },
   }
 });
