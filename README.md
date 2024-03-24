@@ -15,10 +15,11 @@ Under the hood, the extension is built using React and PnPjs.
 
 Uses several ["Reusable React controls"](https://pnp.github.io/sp-dev-fx-controls-react/) for an awesome user experience.
 
-### Feature ideas
+### Feature ideas (not yet implemented)
 
 - [ ] Display additional metadata (filesize, current version) of the template file
 - [ ] Show a preview of a selected template file by clicking on its file name
+- [ ] Refresh template list by clicking on a refresh button in the command bar
 
 ## Compatibility
 
