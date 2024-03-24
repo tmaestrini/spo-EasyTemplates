@@ -1,7 +1,8 @@
 import { ServiceKey, ServiceScope } from "@microsoft/sp-core-library";
 import { PageContext } from '@microsoft/sp-page-context';
 import { isEmpty } from '@microsoft/sp-lodash-subset';
-import { IFile, IWeb, SPFx, Web, spfi } from '@pnp/sp/presets/all';
+import { IFile, IWeb, SPFx, spfi } from '@pnp/sp/presets/all';
+import { AssignFrom } from "@pnp/core";
 import "@pnp/sp/navigation";
 
 export type TemplateFile = {
@@ -43,10 +44,9 @@ export class TemplateService implements ITemplateService {
   }
 
   private async getWeb(webUrl: string): Promise<IWeb> {
-    const sp = spfi().using(SPFx({ pageContext: this.pageContext }));
-    const { WebFullUrl } = await sp.web.getContextInfo(webUrl);
-    const sourceWeb = Web([sp.web, decodeURI(WebFullUrl)]);
-    return sourceWeb;
+    const sp = spfi().using(SPFx({pageContext: this.pageContext}));
+    const otherSite = spfi(webUrl).using(AssignFrom(sp.web));
+    return otherSite.web;
   }
 
   public async getTemplates(templateStoreParams: TemplateParams): Promise<TemplateFile[]> {
