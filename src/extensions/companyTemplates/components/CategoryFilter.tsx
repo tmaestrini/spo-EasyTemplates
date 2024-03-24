@@ -1,6 +1,7 @@
 import * as React from "react";
-import {  Dropdown, IDropdownOption, IDropdownProps, Icon } from "@fluentui/react";
+import { Dropdown, IDropdownOption, IDropdownProps, Icon } from "@fluentui/react";
 import { TemplatesManagementContext } from "../contexts/TemplatesManagementContext";
+import * as strings from "CompanyTemplatesCommandSetStrings";
 
 
 export function CategoryFilter(): JSX.Element {
@@ -30,12 +31,12 @@ export function CategoryFilter(): JSX.Element {
   const onRenderPlaceholder = (props: IDropdownProps): JSX.Element => {
     return <>
       <Icon iconName="Filter" styles={{ root: { paddingRight: '0.5rem' } }} />
-      <span>{props.placeholder ?? 'Kategorien filtern'}</span>
+      <span>{props.placeholder ?? strings.CategoryFilter.DropdownPlaceholderFallback}</span>
     </>
   }
 
   return <Dropdown
-    placeholder="nach Kategorien"
+    placeholder={strings.CategoryFilter.DropdownPlaceholder}
     selectedKeys={selectedKeys}
     onChange={onChange}
     styles={{ root: { width: 250, border: 'none', textAlign: 'left' } }}

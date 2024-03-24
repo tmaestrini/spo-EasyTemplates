@@ -10,6 +10,7 @@ import "@pnp/sp/items/get-all";
 import "@pnp/sp/items";
 import { TemplateFile } from '../../../../hooks/useTemplateFiles';
 import { CategoryFilter } from '../CategoryFilter';
+import * as strings from 'CompanyTemplatesCommandSetStrings';
 
 
 export interface ITemplateViewProps { }
@@ -99,29 +100,29 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
 
   return (
     <div>
-      <h2 className={`od-ItemContent-title ${styles.dialogTitle}`} key={'title'}>Choose your template(s) from the repository</h2>
-      {loading && <div><Spinner size={SpinnerSize.large} label='Loading Templates...' labelPosition='top' /></div>}
+      <h2 className={`od-ItemContent-title ${styles.dialogTitle}`} key={'title'}>{strings.StandardView.Title}</h2>
+      {loading && <div><Spinner size={SpinnerSize.large} label={strings.StandardView.LoadingTemplatesLabel} labelPosition='top' /></div>}
       {(!loading && templateFiles.length > 0) &&
         <>
           <Stack horizontal tokens={{ childrenGap: 10 }} verticalAlign='center' styles={{ root: { padding: '0.5rem 0', borderBottom: '1px solid #edebe9', borderTop: '1px solid #edebe9' } }}>
-          <Text>Templates filtern:</Text>
-          <CategoryFilter />
-          <SearchBox placeholder="Templates durchsuchen und <ENTER> drücken" onSearch={newValue => setTemplateValueFilter(newValue)} onClear={() => setTemplateValueFilter(undefined)} styles={{ root: { width: '350px' } }} />
-        </Stack>
-      <TreeView
-        items={makeFolderStructure(filteredtemplateFiles)}
-        defaultExpandedChildren={false}
-        showCheckboxes={true}
-        defaultExpanded={false}
-        selectionMode={TreeViewSelectionMode.Multiple}
-        onSelect={(items) => checkoutFiles([...items])}
-        onRenderItem={(i) => onRenderItem(i)}
-      />
-    </>}
-{
-  !loading && templateFiles.length === 0 &&
-  <div>No templates found. Please specify configuration first.</div>
-}
+            <Text>{strings.StandardView.FilterTemplatesLabel}</Text>
+            <CategoryFilter />
+            <SearchBox placeholder={strings.StandardView.SearchBoxPlaceholder} onSearch={newValue => setTemplateValueFilter(newValue)} onClear={() => setTemplateValueFilter(undefined)} styles={{ root: { width: '350px' } }} />
+          </Stack>
+          <TreeView
+            items={makeFolderStructure(filteredtemplateFiles)}
+            defaultExpandedChildren={false}
+            showCheckboxes={true}
+            defaultExpanded={false}
+            selectionMode={TreeViewSelectionMode.Multiple}
+            onSelect={(items) => checkoutFiles([...items])}
+            onRenderItem={(i) => onRenderItem(i)}
+          />
+        </>}
+      {
+        !loading && templateFiles.length === 0 &&
+        <div>No templates found. Please specify configuration first.</div>
+      }
     </div >
   );
 };

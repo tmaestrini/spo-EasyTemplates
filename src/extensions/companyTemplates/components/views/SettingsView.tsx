@@ -11,6 +11,7 @@ import "@pnp/sp/webs";
 import { UserService } from '../../../../services/core/UserService';
 import { SettingsTemplateDefinition } from '../SettingsTemplateDefinition';
 import useTemplatesSettings from '../../../../hooks/useTemplatesSettings';
+import * as strings from 'CompanyTemplatesCommandSetStrings';
 
 export interface ISettingsViewProps {
   onNavigationExit: (destination: React.ReactNode) => void;
@@ -48,7 +49,7 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
   console.log(userToken);
   return (
     <>
-      <h2 className={`od-ItemContent-title ${styles.dialogTitle}`} key={'title'}>Settings</h2>
+      <h2 className={`od-ItemContent-title ${styles.dialogTitle}`} key={'title'}>{strings.SettingsView.Title}</h2>
       {userData && <span><br />Current User: {userData.displayName}</span>}
 
       <Stack horizontal tokens={{ childrenGap: 10 }} style={{ verticalAlign: 'top', justifyContent: 'space-between' }}>
@@ -56,8 +57,10 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
           childrenGap: 10,
           maxWidth: '49%'
         }}>
-          <h3 key={'title-template-repository'} className={styles.dialogSubtitle}>Template Repository</h3>
-          <Text>Select the SharePoint site and list that contains your templates. It makes perfect sense if you plan to <a href="https://learn.microsoft.com/en-us/sharepoint/organization-assets-library" target='_blank' rel="noreferrer noopener" data-interception="off">use an organization assets library (as <strong>OfficeTemplateLibrary</strong>)</a> to manage your template management.</Text>
+          <h3 key={'title-template-repository'} className={styles.dialogSubtitle}>{strings.SettingsView.TemplateRepository}</h3>
+          {/* <Text>Select the SharePoint site and list that contains your templates. It makes perfect sense if you plan to <a href="https://learn.microsoft.com/en-us/sharepoint/organization-assets-library" target='_blank' rel="noreferrer noopener" data-interception="off">use an organization assets library (as <strong>OfficeTemplateLibrary</strong>)</a> to manage your template management.</Text> */}
+          <div dangerouslySetInnerHTML={{ __html: strings.SettingsView.TemplateRepositoryDescription }} />
+          <Text dangerouslySetInnerHTML={{ __html: strings.SettingsView.TemplateRepositoryDescription }} />
           {processState.error &&
             <MessageBar
               messageBarType={MessageBarType.error}
@@ -65,21 +68,21 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
           {(processState.saveInProgress && !processState.error) &&
             <MessageBar
               messageBarType={MessageBarType.info}
-              isMultiline={false}>Saving in progress...</MessageBar>}
+              isMultiline={false}></MessageBar>}
           <SitePicker
             context={context as any}
-            label={'Select site'}
+            label={strings.SettingsView.SelectSite}
             mode={'site'}
             allowSearch={true}
             multiSelect={false}
             selectedSites={[{ url: settings.site }] as ISite[]}
             onChange={(sites) => { setSettings({ site: sites[0].url, list: undefined, categoryField: undefined }) }}
-            placeholder={'Select sites'}
+            placeholder={strings.SettingsView.SelectSites}
             searchPlaceholder={'Filter sites'} />
 
           <ListPicker context={context as any}
-            label="Select your list"
-            placeholder="Select your list that stores your templates"
+            label={strings.SettingsView.SelectListLabel}
+            placeholder={strings.SettingsView.SelectListPlaceholder}
             filter="BaseTemplate eq 101 and EntityTypeName ne 'FormServerTemplates' and EntityTypeName ne 'SiteAssets' and EntityTypeName ne 'Style_x0020_Library'"
             includeHidden={false}
             multiSelect={false}
@@ -93,13 +96,13 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
           childrenGap: 10,
           maxWidth: '49%'
         }}>
-          <h3 key={'title-template-definition'} className={styles.dialogSubtitle}>Template definition</h3>
+          <h3 key={'title-template-definition'} className={styles.dialogSubtitle}>{strings.SettingsView.TemplateDefinitionTitle}</h3>
           <SettingsTemplateDefinition settings={settings} changeSettingsCallback={setSettings} />
         </Stack>
       </Stack>
       <Stack style={{ marginTop: '2em', width: '25%' }} tokens={{ childrenGap: 10 }}>
-        <PrimaryButton disabled={processState.saveInProgress} text="Save Settings" onClick={trySaving.bind(this)} allowDisabledFocus />
-        <DefaultButton text="Cancel" onClick={cancelSettings.bind(this)} allowDisabledFocus />
+        <PrimaryButton disabled={processState.saveInProgress} text={strings.SettingsView.SaveSettingsButtonText} onClick={trySaving.bind(this)} allowDisabledFocus />
+        <DefaultButton text={strings.Common.CancelButtonText} onClick={cancelSettings.bind(this)} allowDisabledFocus />
       </Stack>
     </>
   );

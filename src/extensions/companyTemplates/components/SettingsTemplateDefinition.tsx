@@ -4,6 +4,7 @@ import { FieldPicker } from "@pnp/spfx-controls-react/lib/FieldPicker";
 import { SPFxContext } from "../contexts/SPFxContext";
 import { FieldsOrderBy } from "@pnp/spfx-controls-react/lib/services/ISPService";
 import { ISPField } from "@pnp/spfx-controls-react";
+import * as strings from "CompanyTemplatesCommandSetStrings";
 
 export type SettingsTemplateDefinitionProps = {
   settings: { site?: string, list?: string, categoryField?: { Id: string; InternalName: string; } };
@@ -21,13 +22,12 @@ export const SettingsTemplateDefinition: React.FunctionComponent<SettingsTemplat
 
   return <>
     <Stack tokens={{ childrenGap: 10, }}>
-      List: {props.settings.list}
-      <br />Site: {props.settings.site}
+      List: {props.settings.list} / Site: {props.settings.site}
       <br />Category Field Id: {props.settings.categoryField?.Id}
       <FieldPicker
-        label="Field containing the category infos"
+        label={strings.SettingsTemplateDefinition.TemplateFieldFieldPickerLabel}
         context={context as any}
-        placeholder="Select a category field"
+        placeholder={strings.SettingsTemplateDefinition.TemplateFieldFieldPickerPlaceholder}
         webAbsoluteUrl={props.settings.site}
         includeHidden={false}
         includeReadOnly={false}

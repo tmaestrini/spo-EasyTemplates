@@ -4,6 +4,7 @@ import { useId } from '@fluentui/react-hooks';
 import { SPFxContext } from "../contexts/SPFxContext";
 import { TemplateService } from "../../../services/core/TemplateService";
 import { TemplatesManagementContext } from "../contexts/TemplatesManagementContext";
+import * as strings from "CompanyTemplatesCommandSetStrings";
 
 type CopyTemplatesButtonProps = {
   selectedFiles: any[];
@@ -24,15 +25,18 @@ export const CopyTemplatesButton: React.FunctionComponent<CopyTemplatesButtonPro
     const targetFolderUrl = `${library}${currentFolderPath.replace(library, '')}`;
     try {
       const newFiles = await service.copyTemplates(targetFolderUrl, selectedFiles);
-      setCopiedFiles(newFiles, `${newFiles.length} template${newFiles.length > 1 ? 's' : ''} copied successfully!`);
+      setCopiedFiles(newFiles, `${newFiles.length} ${newFiles.length > 1 ? strings.Common.Template : strings.Common.Templates} ${strings.CopyTemplatesButton.CopiedSuccessfullyMessage}`);
     } catch (error) {
       setCopiedFiles([], error);
       console.log(error);
     }
   }
 
+  const buttonText = selectedFiles.length > 0
+    ? (strings.CopyTemplatesButton.CopyTemplatesButtonText).replace('{0}', `${selectedFiles.length}`)
+    : strings.CopyTemplatesButton.CopyTemplatesButtonText.replace('{0} ', '');
   return <>
-    <PrimaryButton id={buttonId} disabled={selectedFiles.length === 0} text={`${selectedFiles.length > 0 ? `${selectedFiles.length} ` : ''}Templates kopieren`}
+    <PrimaryButton id={buttonId} disabled={selectedFiles.length === 0} text={buttonText}
       onClick={copyTemplates} iconProps={{ iconName: 'Installation' }} allowDisabledFocus />
   </>
 }
