@@ -121,7 +121,7 @@ export const StandardView: React.FunctionComponent<ITemplateViewProps> = (props:
         </>}
       {
         !loading && templateFiles.length === 0 &&
-        <div>No templates found. Please specify configuration first.</div>
+        <div>{strings.StandardView.NoTemplatesFoundText}</div>
       }
     </div >
   );

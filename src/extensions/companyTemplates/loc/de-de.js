@@ -43,6 +43,7 @@ define([], function () {
       FilterTemplatesLabel: 'Vorlagen filtern',
       LoadingTemplatesLabel: 'Lade Vorlagen...',
       SearchBoxPlaceholder: 'Vorlagen durchsuchen und <ENTER> drücken',
+      NoTemplatesFoundText: 'No templates found. Please specify configuration first.',
     },
   }
 });

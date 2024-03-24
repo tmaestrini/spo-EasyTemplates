@@ -43,6 +43,7 @@ define([], function () {
       FilterTemplatesLabel: 'Filter templates',
       LoadingTemplatesLabel: 'Loading templates...',
       SearchBoxPlaceholder: 'Search in templates and press <ENTER>',
+      NoTemplatesFoundText: 'No templates found. Please specify configuration first.',
     },
   }
 });

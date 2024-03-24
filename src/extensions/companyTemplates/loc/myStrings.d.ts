@@ -42,6 +42,7 @@ declare interface ICompanyTemplatesCommandSetStrings {
     FilterTemplatesLabel: string;
     LoadingTemplatesLabel: string;
     SearchBoxPlaceholder: string;
+    NoTemplatesFoundText: string;
   }
 }
 
