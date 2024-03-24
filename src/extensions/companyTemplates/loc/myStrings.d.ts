@@ -4,6 +4,7 @@ declare interface ICompanyTemplatesCommandSetStrings {
     Template: string;
     Templates: string;
     CancelButtonText: string;
+    OKButtonText: string;
   };
   // CategoryFilter.tsx
   CategoryFilter: {

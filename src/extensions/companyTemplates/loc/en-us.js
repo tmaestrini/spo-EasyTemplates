@@ -5,6 +5,7 @@ define([], function () {
       Template: 'template',
       Templates: 'templates',
       CancelButtonText: 'Cancel',
+      OKButtonText: 'OK',
     },
     // CategoryFilter.tsx
     CategoryFilter: {

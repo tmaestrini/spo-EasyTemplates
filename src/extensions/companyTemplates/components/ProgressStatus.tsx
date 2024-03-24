@@ -2,6 +2,8 @@ import * as React from "react";
 import { DefaultButton, FocusTrapCallout, FocusZone, Icon, PrimaryButton, Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
 import { TemplatesManagementContext } from "../contexts/TemplatesManagementContext";
 import { getThemeColor } from "../themeHelper";
+import * as strings from "CompanyTemplatesCommandSetStrings";
+
 
 type ProgressStatusProps = {
 }
@@ -22,7 +24,6 @@ export const ProgressStatus: React.FunctionComponent<ProgressStatusProps> = (pro
       <>
         {copiedFiles.success && <Icon id="progress-status" iconName="CheckMark" styles={{ root: { color: fillColor } }} />}
         {!copiedFiles.success && <Icon id="progress-status" iconName="Cancel" />}
-        {/* <IconButton id="progress-status" iconProps={{ iconName: "Completed" }} title="Progress" disabled={copiedFiles?.success} allowDisabledFocus /> */}
         <FocusTrapCallout
           styles={{
             root: {
@@ -41,8 +42,8 @@ export const ProgressStatus: React.FunctionComponent<ProgressStatusProps> = (pro
           <Text block styles={{ root: { marginBottom: '0.5rem' } }}>{copiedFiles.success ? <Icon iconName="Completed" /> : <Icon iconName="ErrorBadge" />} {copiedFiles.message}</Text>
           <FocusZone isCircularNavigation>
             <Stack horizontal>
-              {copiedFiles.success && <PrimaryButton onClick={resetCopyProcess}>OK</PrimaryButton>}
-              {!copiedFiles.success && <DefaultButton onClick={resetCopyProcess}>Cancel</DefaultButton>}
+              {copiedFiles.success && <PrimaryButton onClick={resetCopyProcess}>{strings.Common.OKButtonText}</PrimaryButton>}
+              {!copiedFiles.success && <DefaultButton onClick={resetCopyProcess}>{strings.Common.CancelButtonText}</DefaultButton>}
             </Stack>
           </FocusZone>
         </FocusTrapCallout>
