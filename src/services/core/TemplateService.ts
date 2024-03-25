@@ -10,6 +10,7 @@ export type TemplateFile = {
   title: string;
   type: 'Folder' | 'File';
   siteUrl: string;
+  webUrl: string;
   fileType: string;
   fileRef: string;
   fileLeafRef: string;
@@ -44,7 +45,8 @@ export class TemplateService implements ITemplateService {
   }
 
   private async getWeb(webUrl: string): Promise<IWeb> {
-    const sp = spfi().using(SPFx({pageContext: this.pageContext}));
+    // Create a new SPFx web instance – as described by https://coreyroth.com/2022/02/18/connecting-to-other-sites-with-pnp-js-3-0-0/
+    const sp = spfi().using(SPFx({ pageContext: this.pageContext }));
     const otherSite = spfi(webUrl).using(AssignFrom(sp.web));
     return otherSite.web;
   }
@@ -53,7 +55,7 @@ export class TemplateService implements ITemplateService {
     const { webUrl, listId, categoryField } = templateStoreParams;
 
     const sourceWeb = await this.getWeb(webUrl);
-    const { ServerRelativeUrl: sourceSiteUrl } = await sourceWeb();
+    const { ServerRelativeUrl: sourceSiteUrl, Url: sourceWebUrl } = await sourceWeb();
     const sourceList = sourceWeb.lists.getById(listId);
     const { ParentWebUrl } = await sourceList();
     const selectFields = ['Title', 'FileRef', 'FSObjType',
@@ -73,6 +75,7 @@ export class TemplateService implements ITemplateService {
           title: !isEmpty(f.Title) ? f.Title : f.FileLeafRef,
           type: f.FSObjType === 1 ? 'Folder' : 'File',
           siteUrl: sourceSiteUrl,
+          webUrl: sourceWebUrl,
           fileType: f.File_x0020_Type,
           fileRef: f.FileRef,
           fileLeafRef: f.FileLeafRef,
@@ -97,7 +100,7 @@ export class TemplateService implements ITemplateService {
   public async copyTemplates(targetFolderRelativeUrl: string, selectedFiles: any[]): Promise<IFile[]> {
     try {
       const files = await Promise.all(selectedFiles.map(async (file) => {
-        const sourceWeb = await this.getWeb(file.data.siteUrl);
+        const sourceWeb = await this.getWeb(file.data.webUrl); // don't call by the relative url - make sure you always use the absolute url instead!
         return await sourceWeb.getFileById(file.data.id)
           .copyByPath(`${targetFolderRelativeUrl}/${file.data.fileLeafRef}`, false, {
             KeepBoth: false,
