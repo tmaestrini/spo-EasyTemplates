@@ -66,7 +66,7 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
           {(processState.saveInProgress && !processState.error) &&
             <MessageBar
               messageBarType={MessageBarType.info}
-              isMultiline={false}></MessageBar>}
+              isMultiline={false}>{strings.SettingsView.SavingInProgress}</MessageBar>}
           <SitePicker
             context={context as any}
             label={strings.SettingsView.SelectSite}
@@ -87,7 +87,7 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (props:
             disabled={settings.site === undefined}
             webAbsoluteUrl={settings.site && settings.site}
             selectedList={settings.list}
-            onSelectionChanged={value => setSettings({ ...settings, list: value as string, categoryField: undefined })} />
+            onSelectionChanged={value => value !== 'NO_LIST_SELECTED' && setSettings({ ...settings, list: value as string, categoryField: undefined })} />
 
         </Stack>
         <Stack style={{ width: '49%' }} tokens={{
