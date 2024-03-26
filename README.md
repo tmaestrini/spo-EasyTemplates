@@ -12,7 +12,6 @@ Under the hood, the extension is built using React and PnPjs.
 - [x] Filter by file category
 - [x] Filter by name
 - [x] Copy selected files fom template repository to the current document library
-- [ ] Show a link to the copied file(s) to open it / them in a new browser tab (Dan's feature request 😃)
 - [x] Show a settings page to all users who have permissions to manage lists
 
 Uses several ["Reusable React controls"](https://pnp.github.io/sp-dev-fx-controls-react/) for an awesome user experience.
@@ -20,7 +19,7 @@ Uses several ["Reusable React controls"](https://pnp.github.io/sp-dev-fx-control
 ### Feature ideas (not yet implemented)
 
 - [ ] Display additional metadata (filesize, current version) of the template file
-- [ ] Show a preview of a selected template file by clicking on its file name
+- [ ] Show a preview of a selected template file by clicking on its file name (Dan's favorite feature 😃)
 - [ ] Refresh template list by clicking on a refresh button in the command bar
 
 ## Compatibility
