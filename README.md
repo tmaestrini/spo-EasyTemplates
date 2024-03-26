@@ -7,6 +7,7 @@ Under the hood, the extension is built using React and PnPjs.
 
 ## Features
 
+- [x] Show an additional button 'Company templates' (when the actual user is authorized to add files to the library)
 - [x] List files that serve as company templates in a tree structure
 - [x] Filter by file category
 - [x] Filter by name
