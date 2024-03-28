@@ -18,7 +18,7 @@ export const ProgressStatus: React.FunctionComponent<ProgressStatusProps> = (pro
 
   return <>
     {isCopyingFiles &&
-      <Spinner size={SpinnerSize.small} label="Copying" labelPosition="left"/>
+      <Spinner size={SpinnerSize.small} label="Copying" labelPosition="left" />
     }
     {(copiedFiles && copiedFiles.files) &&
       <>
