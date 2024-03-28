@@ -62,7 +62,7 @@ export class TemplateService implements ITemplateService {
       'BaseName', 'ServerUrl', 'DocIcon',
       'LinkFilename', 'UniqueId', 'FileDirRef',
       'File_x0020_Type', 'FileLeafRef', 'Modified', /*"FieldValuesAsText"*/];
-    categoryField?.InternalName && selectFields.push(categoryField?.InternalName);
+    if (categoryField?.InternalName) selectFields.push(categoryField?.InternalName);
 
     const fileItems = (await sourceList.items
       .select(...selectFields)
