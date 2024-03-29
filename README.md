@@ -1,11 +1,27 @@
-# EASY Templates
+# Company Templates · Simple Management of Company Templates in SharePoint Online
 
 ## Summary
 
 Useful scenario to make centrally managed company templates (from a document library in SharePoint Online) available in every document library within the whole SharePoint tenant. 
-Under the hood, the extension is built using React and PnPjs.
+![Demo](./assets/Demo.gif)
+
+A SharePoint administrator can easily configure the document library that contains all templates in the settings view:
+![Admin Settings](./assets/Settings.jpg)
+
+> [!WARNING]
+> 👉 For now, company templates can only be stored in one single library (aka «template repostory») within the whole SPO tenant. Therefore, only a user that has `isSiteAdmin` property assigned can access the settings view. We strongly recommend that only a tenant admin should / can configure the template repository settings.
+
+> [!NOTE]
+> By defining the template repository, the settings will be stored in a **tenant property** (property name `easyTemplatesSettings`). Every instance of this extension refers to this tenant property. 
 
 ## Features
+
+Under the hood, the extension is built on React and PnPjs and touches on the following topics:
+* **SharePoint Tenant Properties** to store the settings tenant-wide
+* **React Providers** for a centralized state management of the templates and the actions
+* **React Hooks** to access several states and to load data asynchronously within different React Components
+
+From a user perspective, the extension covers these features:
 
 - [x] Show an additional button 'Company templates' (when the actual user is authorized to add files to the library)
 - [x] List files that serve as company templates in a tree structure
@@ -14,7 +30,7 @@ Under the hood, the extension is built using React and PnPjs.
 - [x] Copy selected files fom template repository to the current document library
 - [x] Show a settings page to all users who have permissions to manage lists
 
-Uses several ["Reusable React controls"](https://pnp.github.io/sp-dev-fx-controls-react/) for an awesome user experience.
+It uses several ["Reusable React controls"](https://pnp.github.io/sp-dev-fx-controls-react/) for an awesome user experience.
 
 ### Upcoming Features (or not yet implemented ideas)
 
@@ -48,18 +64,63 @@ For more information about SPFx compatibility, please refer to <https://aka.ms/s
 ## Contributors
 
 - [Tobias Maestrini](https://github.com/tmaestrini)
-- [Dan Toft (Code Reviews)](https://github.com/Tanddant)
+- [Dan Toft](https://github.com/Tanddant) (👀 Code reviews)
 
 ## Version history
 
 | Version | Date            | Comments        |
 | ------- | --------------- | --------------- |
-| 1.0     | March 27, 2024  | Initial release |
+| 1.0     | March 29, 2024  | Initial release |
 
 ## Prerequisites
 
-A SharePoint Tenant with a dedicated document library that serves as repository for company templates. Any document library is allowed; we suggest to make proper use of a SharePoint [organization assets library](https://learn.microsoft.com/en-us/sharepoint/organization-assets-library).
+A SharePoint Tenant with a dedicated document library that serves as repository for company templates. Any document library is supported; we suggest to make proper use of a SharePoint [organization assets library](https://learn.microsoft.com/en-us/sharepoint/organization-assets-library).
+
+## Minimal path to awesome
+
+- Clone this repository (or [download this solution as a .ZIP file](https://pnp.github.io/download-partial/?url=https://github.com/pnp/sp-dev-fx-webparts/tree/main/samples/react-company-templates) then unzip it)
+- From your command line, change your current directory to the directory containing this sample (`react-company-templates`, located under `samples`)
+- in the command line run:
+  - `npm install`
+  - `gulp serve`
+
+> This sample can also be opened with [VS Code Remote Development](https://code.visualstudio.com/docs/remote/remote-overview). Visit <https://aka.ms/spfx-devcontainer> for further instructions.
+**
+
+## How to run the solution locally
+
+- Clone this repository
+- Ensure that you are in the solution folder
+- in the command-line run:
+  - `npm install`
+  - `gulp serve`
+
+### Debug URL for testing
+
+Here's a debug URL for testing around this sample.
+
+```
+?loadSPFX=true&debugManifestsFile=https://localhost:4321/temp/manifests.js&customActions={"532b1c1d-bcbd-4831-a821-ec95eac1ca1c":{"location":"ClientSideExtension.ListViewCommandSet.CommandBar","properties":{}}}
+```
+
+## Help
+
+We do not support samples, but this community is always willing to help, and we want to improve these samples. We use GitHub to track issues, which makes it easy for  community members to volunteer their time and help resolve issues.
+
+If you're having issues building the solution, please run [spfx doctor](https://pnp.github.io/cli-microsoft365/cmd/spfx/spfx-doctor/) from within the solution folder to diagnose incompatibility issues with your environment.
+
+You can try looking at [issues related to this sample](https://github.com/pnp/sp-dev-fx-webparts/issues?q=label%3A%22sample%3A%20react-company-templates%22) to see if anybody else is having the same issues.
+
+You can also try looking at [discussions related to this sample](https://github.com/pnp/sp-dev-fx-webparts/discussions?discussions_q=react-company-templates) and see what the community is saying.
+
+If you encounter any issues using this sample, [create a new issue](https://github.com/pnp/sp-dev-fx-webparts/issues/new?assignees=&labels=Needs%3A+Triage+%3Amag%3A%2Ctype%3Abug-suspected%2Csample%3A%20react-company-templates&template=bug-report.yml&sample=react-company-templates&authors=@tmaestrini&title=react-company-templates%20-%20).
+
+For questions regarding this sample, [create a new question](https://github.com/pnp/sp-dev-fx-webparts/issues/new?assignees=&labels=Needs%3A+Triage+%3Amag%3A%2Ctype%3Aquestion%2Csample%3A%20react-company-templates&template=question.yml&sample=react-company-templates&authors=@tmaestrini&title=react-company-templates%20-%20).
+
+Finally, if you have an idea for improvement, [make a suggestion](https://github.com/pnp/sp-dev-fx-webparts/issues/new?assignees=&labels=Needs%3A+Triage+%3Amag%3A%2Ctype%3Aenhancement%2Csample%3A%20react-company-templates&template=suggestion.yml&sample=react-company-templates&authors=@tmaestrini&title=react-company-templates%20-%20).
 
 ## Disclaimer
 
 **THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
+
+<img src="https://m365-visitor-stats.azurewebsites.net/sp-dev-fx-extensions/samples/react-company-templates" />

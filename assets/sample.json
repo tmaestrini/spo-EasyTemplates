@@ -3,14 +3,14 @@
         "name": "pnp-sp-dev-spfx-web-parts-react-company-templates",
         "source": "pnp",
         "title": "Company Templates",
-        "shortDescription": "An extension to provide simple approach for company wide used templates in SharePoint Online.",
-        "url": "https://github.com/pnp/sp-dev-fx-webparts/tree/main/samples/<tbd>",
-        "downloadUrl": "https://pnp.github.io/download-partial/?url=https://github.com/pnp/sp-dev-fx-webparts/tree/main/samples/<tbd>",
+        "shortDescription": "An extension to provide a simple approach for company wide used templates in SharePoint Online.",
+        "url": "https://github.com/pnp/sp-dev-fx-webparts/tree/main/samples/react-company-templates",
+        "downloadUrl": "https://pnp.github.io/download-partial/?url=https://github.com/pnp/sp-dev-fx-webparts/tree/main/samples/react-company-templates",
         "longDescription": [
-            "This is an extension of the built-in 'New document' experience in a document library in SharePoint Online. It allows you to define a repository (such as a standard document library or an org assets library) which acts as a source of templates that can be used in every document library."
+            "This is an alternative to the built-in 'New document' experience in a document library in SharePoint Online. It allows a SharePoint admin to define a repository (such as a standard document library or an org assets library) which acts as a source of templates that can be used in every document library. Any user can browse through the collection of company templates, get an instance of the desired template(s) by one single click and start using it."
         ],
         "creationDateTime": "2023-12-22",
-        "updateDateTime": "2024-xx-xx",
+        "updateDateTime": "2024-03-29",
         "products": [
             "SharePoint"
         ],
@@ -28,8 +28,8 @@
             {
                 "type": "image",
                 "order": 100,
-                "url": "https://github.com/pnp/sp-dev-fx-webparts/raw/main/samples/<tbd>/assets/Demo.gif",
-                "alt": "Web Part Preview"
+                "url": "https://github.com/pnp/sp-dev-fx-webparts/raw/main/samples/react-company-templates/assets/Demo.gif",
+                "alt": "Extension Preview"
             }
         ],
         "authors": [
@@ -37,13 +37,18 @@
                 "gitHubAccount": "tmaestrini",
                 "pictureUrl": "https://github.com/tmaestrini.png",
                 "name": "Tobias Maestrini"
+            },
+            {
+                "gitHubAccount": "Tanddant",
+                "pictureUrl": "https://github.com/Tanddant.png",
+                "name": "Dan Toft (Code Reviews)"
             }
         ],
         "references": [
             {
-                "name": "Build your first SharePoint client-side web part",
-                "description": "Client-side web parts are client-side components that run in the context of a SharePoint page. Client-side web parts can be deployed to SharePoint environments that support the SharePoint Framework. You can also use modern JavaScript web frameworks, tools, and libraries to build them.",
-                "url": "https://docs.microsoft.com/en-us/sharepoint/dev/spfx/web-parts/get-started/build-a-hello-world-web-part"
+                "name": "ListView Command Set extension",
+                "description": "You can use SharePoint Framework (SPFx) Extensions to build list view command set extensions with the aim to extend the SharePoint command surfaces to add new actions, and provides client-side code that you can use to implement custom behaviors.",
+                "url": "https://learn.microsoft.com/en-us/sharepoint/dev/spfx/extensions/get-started/building-simple-cmdset-with-dialog-api"
             }
         ]
     }
