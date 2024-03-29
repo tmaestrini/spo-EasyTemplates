@@ -5,7 +5,7 @@ import { TemplatesManagementContext } from "../contexts/TemplatesManagementConte
 import { CopyTemplatesButton } from "./CopyTemplatesButton";
 import { ProgressStatus } from "./ProgressStatus";
 import { SPFxContext } from "../contexts/SPFxContext";
-import { SPPermission } from "@microsoft/sp-page-context";
+import { SPFx, spfi } from '@pnp/sp/presets/all';
 
 type ICommandBarMenuProps = {
   pageNavigationHandler: (page: React.ReactNode) => void;
@@ -15,11 +15,22 @@ export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (pr
   const { selectedFiles, checkoutFiles, setTemplateValueFilter, copiedFiles } = React.useContext(TemplatesManagementContext);
   const { context } = React.useContext(SPFxContext);
   const { pageNavigationHandler } = props;
+  const [userIsSiteAdmin, setUserIsSiteAdmin] = React.useState<boolean>(false);
 
   function clearCommandBarValues(): void {
     checkoutFiles([]);
     setTemplateValueFilter(undefined);
   }
+
+  React.useEffect(() => {
+    const sp = spfi().using(SPFx({ pageContext: context.pageContext }));
+    sp.web.currentUser().then((user) => {
+      const { IsSiteAdmin } = user;
+      setUserIsSiteAdmin(IsSiteAdmin);
+    }).catch((error) => {
+      console.log(error);
+    });
+  }, []);
 
   const commandBarItems: ICommandBarItemProps[] = [
     {
@@ -35,7 +46,7 @@ export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (pr
       disabled: copiedFiles?.files?.length > 0 ? false : true,
       onRenderIcon: () => <ProgressStatus />,
     },
-    context.pageContext.web.permissions.hasPermission(SPPermission.manageLists) &&
+    userIsSiteAdmin &&
     {
       key: 'settings',
       text: 'Settings',
@@ -51,7 +62,7 @@ export const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (pr
     items={commandBarItems}
     farItems={commandBarFarItems}
     ariaLabel="Template actions"
-    styles={{ root: { borderBottom: '1px solid #edebe9', borderTop: '1px solid #edebe9'} }}
+    styles={{ root: { borderBottom: '1px solid #edebe9', borderTop: '1px solid #edebe9' } }}
   />
 
 }
