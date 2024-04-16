@@ -1,0 +1,37 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "PnP Community Call 18.04.2024",
+  "steps": [
+    {
+      "file": "src/extensions/companyTemplates/CompanyTemplatesCommandSet.ts",
+      "description": "Command action is only visible when a user has permissions to add items to a library:\n\n```typescript\nconst userListPermission = new SPPermission(this.context.pageContext.list.permissions.value);\nif (userListPermission.hasPermission(SPPermission.addListItems)) {\n  compareOneCommand.visible = true;\n}\n```  ",
+      "line": 47
+    },
+    {
+      "file": "src/extensions/companyTemplates/components/CommandBarMenu.tsx",
+      "description": "Admin settings are only available for (site) admin users; this is handled by a **React state** `userIsSiteAdmin` and the `useEffect` hook (invoked on component load):\n\n```typescript\nconst [userIsSiteAdmin, setUserIsSiteAdmin] = React.useState<boolean>(false);\n```",
+      "line": 49
+    },
+    {
+      "file": "src/extensions/companyTemplates/components/CompanyTemplates.tsx",
+      "description": "Page handling – a „mini router“ realized via a simple React Hook: «usePageNavigator»",
+      "line": 31
+    },
+    {
+      "file": "src/extensions/companyTemplates/components/CompanyTemplates.tsx",
+      "description": "State Management via Context Provider: implementation of a centralized state management to ensure that all components can access shared state and act correctly\n\nExample: component `CommandBarMenu` and (view) component `StandardView` share files that have to be copied (`checkoutFiles`):\n```typescript\nexport const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (props: React.PropsWithChildren<ICommandBarMenuProps>) => {\n  const { selectedFiles, checkoutFiles, setTemplateValueFilter, copiedFiles } = React.useContext(TemplatesManagementContext);\n  const { context } = React.useContext(SPFxContext);\n  // intentionally omitted\n\n}\n\nexport const StandardView: React.FunctionComponent<ITemplateViewProps> = (props: React.PropsWithChildren<ITemplateViewProps>) => {\n  const { templateFiles, checkoutFiles, templateFilter, loading, setTemplateValueFilter } = useContext(TemplatesManagementContext);\n  const [filteredtemplateFiles, setFilteredtemplateFiles] = React.useState<TemplateFile[]>(templateFiles);\n\n  // Template Filtering\n  React.useEffect(() => {\n    let filtered = templateFiles\n    if (templateFilter.categories?.length > 0) {\n      filtered = filtered\n        .filter(file => {\n          return file.categories?.some(category => category.toLowerCase() === templateFilter?.categories[0].toLowerCase());\n        });\n    }\n    filtered = filtered.filter(file => {\n      return file.title.toLowerCase().includes(templateFilter.value?.toLowerCase() ?? '')\n        || file.fileLeafRef.toLowerCase().includes(templateFilter.value?.toLowerCase() ?? '');\n    });\n    setFilteredtemplateFiles(filtered);\n  }, [templateFilter.value, templateFilter.categories, templateFiles]);\n\n  // intentionally omitted\n}\n```",
+      "line": 33
+    },
+    {
+      "file": "src/services/core/TemplateService.ts",
+      "description": "Be careful when copying files from one location to another – make sure you use the PnPJs library the right way:\n\ninitialize the source web with `spfi(webUrl).using(AssignFrom(sp.web));` while using the **absolute url**!\n\n👉 avoid side effects that are really hard to debug!",
+      "line": 50
+    },
+    {
+      "file": "src/extensions/companyTemplates/components/views/SettingsView.tsx",
+      "description": "Store the settings centrally via SPO Tenant properties and make them read-only accessible to the component",
+      "line": 40
+    }
+  ],
+  "ref": "main"
+}
