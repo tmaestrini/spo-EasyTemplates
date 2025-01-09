@@ -1,7 +1,7 @@
 import { BaseComponentContext } from "@microsoft/sp-component-base";
 import * as React from "react";
 
-export interface ISPFxContext {
+export type ISPFxContext = {
     context: BaseComponentContext;
 }
 

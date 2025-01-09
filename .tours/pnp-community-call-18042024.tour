@@ -3,35 +3,92 @@
   "title": "PnP Community Call 18.04.2024",
   "steps": [
     {
+      "title": "Permission Handling",
       "file": "src/extensions/companyTemplates/CompanyTemplatesCommandSet.ts",
-      "description": "Command action is only visible when a user has permissions to add items to a library:\n\n```typescript\nconst userListPermission = new SPPermission(this.context.pageContext.list.permissions.value);\nif (userListPermission.hasPermission(SPPermission.addListItems)) {\n  compareOneCommand.visible = true;\n}\n```  ",
+      "description": "Command action is only visible when a user has permissions to add items to a library:\n\n```typescript\nconst userListPermission = new SPPermission(this.context.pageContext.list.permissions.value);\nif (userListPermission.hasPermission(SPPermission.addListItems)) {\n  templatesCmd.visible = true;\n}\n```  ",
       "line": 47
     },
     {
+      "title": "Admin settings are only available for (site) admin users",
       "file": "src/extensions/companyTemplates/components/CommandBarMenu.tsx",
       "description": "Admin settings are only available for (site) admin users; this is handled by a **React state** `userIsSiteAdmin` and the `useEffect` hook (invoked on component load):\n\n```typescript\nconst [userIsSiteAdmin, setUserIsSiteAdmin] = React.useState<boolean>(false);\n```",
-      "line": 49
+      "line": 49,
+      "selection": {
+        "start": {
+          "line": 49,
+          "character": 5
+        },
+        "end": {
+          "line": 49,
+          "character": 20
+        }
+      }
     },
     {
+      "title": "Page handling",
       "file": "src/extensions/companyTemplates/components/CompanyTemplates.tsx",
-      "description": "Page handling – a „mini router“ realized via a simple React Hook: «usePageNavigator»",
-      "line": 31
+      "description": "Page handling – a „mini router“ realized via a simple React hook: `usePageNavigator`.\n\nA navigation request to any other view can be passed via the `navigateTo` method of the `usePageNavigator` hook. The targeted view (component) then is displayed / rendered based on the router's property `selectedPage`.\n\n```typescript\nexport default function usePageNavigator(startNode?: React.ReactNode): { selectedPage: React.ReactNode, navigateTo: (navigationNode: React.ReactNode) => void } {\n  const [page, setPage] = useState(startNode);\n\n  function navigateTo(navigationNode: React.ReactNode): void {\n    setPage(navigationNode);\n  }\n\n  useEffect(() => {\n    navigateTo(startNode);\n  }, []);\n\n  return { selectedPage: page, navigateTo };\n}\n```",
+      "line": 31,
+      "selection": {
+        "start": {
+          "line": 31,
+          "character": 13
+        },
+        "end": {
+          "line": 31,
+          "character": 41
+        }
+      }
     },
     {
+      "title": "Global State Management",
       "file": "src/extensions/companyTemplates/components/CompanyTemplates.tsx",
-      "description": "State Management via Context Provider: implementation of a centralized state management to ensure that all components can access shared state and act correctly\n\nExample: component `CommandBarMenu` and (view) component `StandardView` share files that have to be copied (`checkoutFiles`):\n```typescript\nexport const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (props: React.PropsWithChildren<ICommandBarMenuProps>) => {\n  const { selectedFiles, checkoutFiles, setTemplateValueFilter, copiedFiles } = React.useContext(TemplatesManagementContext);\n  const { context } = React.useContext(SPFxContext);\n  // intentionally omitted\n\n}\n\nexport const StandardView: React.FunctionComponent<ITemplateViewProps> = (props: React.PropsWithChildren<ITemplateViewProps>) => {\n  const { templateFiles, checkoutFiles, templateFilter, loading, setTemplateValueFilter } = useContext(TemplatesManagementContext);\n  const [filteredtemplateFiles, setFilteredtemplateFiles] = React.useState<TemplateFile[]>(templateFiles);\n\n  // Template Filtering\n  React.useEffect(() => {\n    let filtered = templateFiles\n    if (templateFilter.categories?.length > 0) {\n      filtered = filtered\n        .filter(file => {\n          return file.categories?.some(category => category.toLowerCase() === templateFilter?.categories[0].toLowerCase());\n        });\n    }\n    filtered = filtered.filter(file => {\n      return file.title.toLowerCase().includes(templateFilter.value?.toLowerCase() ?? '')\n        || file.fileLeafRef.toLowerCase().includes(templateFilter.value?.toLowerCase() ?? '');\n    });\n    setFilteredtemplateFiles(filtered);\n  }, [templateFilter.value, templateFilter.categories, templateFiles]);\n\n  // intentionally omitted\n}\n```",
-      "line": 33
+      "description": "State Management via React `Context Provider`: implementation of a centralized state management to ensure that all components can access shared state and act correctly.\n\n**Example:** the `TemplatesManagementContext` that shares common state for template management:\n```typescript\nexport const TemplatesManagementContext = React.createContext<TemplatesManagementContextState>({\n  templateFiles: [], templateFilesByCategory: [], loading: true,\n  selectedFiles: [], checkoutFiles: undefined, templateFilter: { value: undefined, categories: [] },\n});\n```\n\nDifferent components share a common state that consists of several objects – objects will be mutated or accessed by different components.\n\n**Example:** component `CommandBarMenu` and (view) component `StandardView` share files that have to be copied (`checkoutFiles`):\n```typescript\nexport const CommandBarMenu: React.FunctionComponent<ICommandBarMenuProps> = (props: React.PropsWithChildren<ICommandBarMenuProps>) => {\n  const { selectedFiles, checkoutFiles, setTemplateValueFilter, copiedFiles } = React.useContext(TemplatesManagementContext);\n  const { context } = React.useContext(SPFxContext);\n  // further code intentionally omitted\n}\n\nexport const StandardView: React.FunctionComponent<ITemplateViewProps> = (props: React.PropsWithChildren<ITemplateViewProps>) => {\n  const { templateFiles, checkoutFiles, templateFilter, loading, setTemplateValueFilter } = useContext(TemplatesManagementContext);\n  const [filteredtemplateFiles, setFilteredtemplateFiles] = React.useState<TemplateFile[]>(templateFiles);\n  // further code intentionally omitted\n}\n```",
+      "line": 28,
+      "selection": {
+        "start": {
+          "line": 28,
+          "character": 9
+        },
+        "end": {
+          "line": 28,
+          "character": 45
+        }
+      }
     },
     {
+      "title": "Copying files",
       "file": "src/services/core/TemplateService.ts",
-      "description": "Be careful when copying files from one location to another – make sure you use the PnPJs library the right way:\n\ninitialize the source web with `spfi(webUrl).using(AssignFrom(sp.web));` while using the **absolute url**!\n\n👉 avoid side effects that are really hard to debug!",
-      "line": 50
+      "description": "Be careful when copying files from one location to another – make sure you use the PnPJs library the right way:\n\ninitialize the source web with `spfi(webUrl).using(AssignFrom(sp.web));` while using the **absolute url** in `webUrl`!\n\n👉 avoid side effects that are really hard to debug! [Thanks to Corey Roth's Blog](https://coreyroth.com/2022/02/18/connecting-to-other-sites-with-pnp-js-3-0-0/)",
+      "line": 50,
+      "selection": {
+        "start": {
+          "line": 50,
+          "character": 23
+        },
+        "end": {
+          "line": 50,
+          "character": 61
+        }
+      }
     },
     {
+      "title": "Store settings",
       "file": "src/extensions/companyTemplates/components/views/SettingsView.tsx",
-      "description": "Store the settings centrally via SPO Tenant properties and make them read-only accessible to the component",
-      "line": 40
+      "description": "Store the settings centrally via **SPO Tenant properties** and make them read-only accessible to the component.\n```typescript\nasync function storeListSettings(): Promise<void> {\n  const sp = spfi().using(SPFx(context));\n  const w = await sp.getTenantAppCatalogWeb();\n\n  // specify required key and value\n  await w.setStorageEntity(\"easyTemplatesSettings\", JSON.stringify({ categoryField: settings.categoryField, site: settings.site, list: settings.list }));\n}\n````\n\n👉 Only tenant admins have write access on tenant props, but any SPFx component can read them in the context of ANY user! 😍",
+      "line": 40,
+      "selection": {
+        "start": {
+          "line": 40,
+          "character": 5
+        },
+        "end": {
+          "line": 40,
+          "character": 24
+        }
+      }
     }
   ],
-  "ref": "main"
+  "ref": "main",
+  "isPrimary": true
 }
